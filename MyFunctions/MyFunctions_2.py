@@ -50,6 +50,7 @@ half_heart = Heart.Heart("half_heart", 0, 0)
 empty_heart = Heart.Heart("empty_heart", 0, 0)
 
 coin_static_image = Item.Item(85, 45, "static_coin", can_collect=False)
+tempos_waves_derrotadas = []
 
 
 def draw_info(current_palyer: object, screen: object, damage_text_group) -> None:
@@ -127,6 +128,7 @@ def distance(coordinates_1: Tuple[Union[int, float]], coordinates_2: Tuple[Union
 
 
 def draw_grid(screen: object) -> None:
+    
     for x in range(Game_Constants.grides_number):
         # Vertical Lines :
         pygame.draw.line(screen, Game_Constants.WHITE_COLOR, (x * Game_Constants.grid_spacing, 0),
@@ -194,6 +196,9 @@ def change_level(screen: object, current_world: World, current_player: Character
     # if level == 1 and Worlds.current_level == 7:
     #     restart(screen)
     #     Game_Constants.fade_animation_cooldown = 12
+    if level==7:
+        Worlds.World_Raids.__getitem__(level)[0][0]()
+        
 
     # Changing the World's Mask :
     try:
@@ -277,16 +282,17 @@ def open_door(interaction_info: list) -> None:
                 Sound_Effects.Closed_Door.play_loop()
 
 
+
 def menu(screen: object, is_fullscreen: bool = False) -> None:
     global interrupt_flag
-
+    
     Screen = screen
     FullScreen = is_fullscreen
 
     Worlds.Start_Fade = True
     Worlds.Current_Fade_Animation = Worlds.Fade_Animation[1]
     Worlds.Do_Fade = 1
-
+    
     for fade in Worlds.Fade_Animation:
         fade.change_rate = Game_Constants.second_fade_transition_rate
 
@@ -336,7 +342,7 @@ def menu(screen: object, is_fullscreen: bool = False) -> None:
 
     Game_Loop = True
     while Game_Loop:
-
+        
         Screen.fill(Game_Constants.BLACK_COLOR)
 
         game_clock.tick(Game_Constants.FPS)
@@ -352,7 +358,7 @@ def menu(screen: object, is_fullscreen: bool = False) -> None:
         Sound_Effects.Menu_Music.play_loop()
 
         left_mouse_click = pygame.mouse.get_pressed()[0]
-
+        
         if not pointer_rect.colliderect(Play_Button.rect):
             Play_Button.draw(Screen)
             Play_Button.update()
@@ -932,7 +938,7 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
         # Drawing Enemies :
         for enemy in enemy_list:
             enemy.draw(Screen)
-
+        print(tempos_waves_derrotadas)
         # Drawing Weapons :
         weapon.draw(Screen, current_player)
 
@@ -1228,7 +1234,10 @@ def restart(screen: object) -> None:
                     lambda: raid(Worlds.current_player, 4, 0, Worlds.Level_Enemies.__getitem__(6), wanted_monsters_list=["muddy", "goblin"]),
                     lambda: raid(Worlds.current_player, 5, 0, Worlds.Level_Enemies.__getitem__(6), wanted_monsters_list=["muddy"])], [True, True, True, True]),
 
-               7: []}
+               7: ([lambda: raid(Worlds.current_player, 6, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["zombie", "skeleton"]),
+                    lambda: raid(Worlds.current_player, 4, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["goblin"]),
+                    lambda: raid(Worlds.current_player, 4, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["muddy", "goblin"]),
+                    lambda: raid(Worlds.current_player, 5, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["muddy"])], [True, True, True, True])}
 
     Worlds.Level_Items = {
         1: [Item.Item(Game_Constants.grid_spacing * 37 + 16, Game_Constants.grid_spacing * 17, "emerald")],
@@ -1417,7 +1426,7 @@ def raid(current_player: Character, quantity: int, frequency: Union[int, float],
     global interrupt_flag
 
     def run_raid() -> bool:
-
+        inicio = time.time()
         nonlocal coordinate_x, coordinate_y, __counter__, __interval_time__
 
         # Don't change the variables "__counter__" and "__interval_time__". It is a parameter used to generate the
@@ -1485,9 +1494,12 @@ def raid(current_player: Character, quantity: int, frequency: Union[int, float],
                 if interrupt_flag:
                     return True
 
-            if Worlds.current_level not in {4, 5, 6}:
-                Worlds.raid_index = 0
-                return True
+            fim = time.time()
+            tempo_decorrido= fim - inicio
+            if not tempos_waves_derrotadas:
+                tempos_waves_derrotadas.append(round(tempo_decorrido,3))
+            else:
+                tempos_waves_derrotadas.append(round(tempo_decorrido,3)- round((len(tempos_waves_derrotadas)-1)))
 
             # If player has defeated the Raid :
             Worlds.World_Raids.__getitem__(Worlds.current_level)[1][Worlds.raid_index] = False
@@ -1497,6 +1509,8 @@ def raid(current_player: Character, quantity: int, frequency: Union[int, float],
             # Calling the next raid :
             try:
                 Worlds.World_Raids.__getitem__(Worlds.current_level)[0][Worlds.raid_index]()
+                
+
             except IndexError:
                 Worlds.raid_index = 0
                 return True  # End of the raid.

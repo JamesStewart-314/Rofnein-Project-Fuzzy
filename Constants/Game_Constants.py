@@ -76,7 +76,7 @@ Arrow_scale: int = 1
 Sword_scale: int = 1
 UI_Icons_Scale: int | float = 1 / 3
 
-sword_base_damage: int | float = 15
+sword_base_damage: int | float = 3000
 bone_base_damage: int | float = 10
 standard_arrow_damage: int | float = 10
 fireball_base_damage: int | float = 20

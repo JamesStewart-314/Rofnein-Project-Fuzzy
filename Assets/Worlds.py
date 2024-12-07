@@ -629,7 +629,7 @@ Level_Spawn_Location = {1: (Game_Constants.Window_width / 2 - 16 * Game_Constant
                         6: (Game_Constants.Window_width / 2, Game_Constants.Window_height - 64),
                         7: (Game_Constants.Window_width / 2, Game_Constants.Window_height - 64)}
 
-Level_Enemies = {1: [], 2: Second_World_Enemies, 3: [], 4: [], 5: [], 6: [], 7: Seventh_World_Enemies}
+Level_Enemies = {1: [], 2: Second_World_Enemies, 3: [], 4: [], 5: [], 6: [], 7: []}
 
 Level_Items = {1: [Item.Item(Game_Constants.grid_spacing * 37 + 16, Game_Constants.grid_spacing * 17, "emerald")],
                2: [],
@@ -655,7 +655,10 @@ World_Raids = {1: [], 2: [], 3: [],
                     lambda: MyFunctions_2.raid(current_player, 4, 0, Level_Enemies.__getitem__(6), wanted_monsters_list=["muddy", "goblin"]),
                     lambda: MyFunctions_2.raid(current_player, 5, 0, Level_Enemies.__getitem__(6), wanted_monsters_list=["muddy"])], [True, True, True, True]),
 
-               7: []}
+               7: ([lambda: MyFunctions_2.raid(current_player, 6, 0, Level_Enemies.__getitem__(7), wanted_monsters_list=["zombie", "skeleton"]),
+                    lambda: MyFunctions_2.raid(current_player, 4, 0, Level_Enemies.__getitem__(7), wanted_monsters_list=["goblin"]),
+                    lambda: MyFunctions_2.raid(current_player, 4, 0, Level_Enemies.__getitem__(7), wanted_monsters_list=["muddy", "goblin"]),
+                    lambda: MyFunctions_2.raid(current_player, 5, 0, Level_Enemies.__getitem__(7), wanted_monsters_list=["muddy"])], [True, True, True, True])}
 
 Level_Title = {1: ShowFloatingText.FloatingText((Game_Constants.Window_width - Titles_Images.Level_1_Title.get_width()) / 2,
                                            Game_Constants.Window_height / 23,
