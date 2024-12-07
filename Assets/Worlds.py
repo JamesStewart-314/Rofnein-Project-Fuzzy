@@ -573,8 +573,8 @@ Seventh_World_Objects.append(Wall_Rect_4)
 
 Seventh_World_Enemies = []
 
-Demon_Boss = Monster.Monster(Game_Constants.Window_width / 2, Game_Constants.Window_height / 2 - 200, "demon")
-Seventh_World_Enemies.append(Demon_Boss)
+# Demon_Boss = Monster.Monster(Game_Constants.Window_width / 2, Game_Constants.Window_height / 2 - 200, "demon")
+# Seventh_World_Enemies.append(Demon_Boss)
 
 # ------------------------------------------------------------------------------------------------------------------ #
 
@@ -588,7 +588,7 @@ Level_Interactions = {1: First_World_Rect_Interactions, 2: Second_World_Rect_Int
 
 # Square to get to the next level :
 Next_Level_Location = {1: ((pygame.rect.Rect(Game_Constants.grid_spacing * 19, 0,
-                                             Game_Constants.grid_spacing * 2, Game_Constants.grid_spacing), 2), None),
+                                             Game_Constants.grid_spacing * 2, Game_Constants.grid_spacing), 7), None),
 
                        2: ((pygame.rect.Rect(Game_Constants.grid_spacing * 19, 0,
                                              Game_Constants.grid_spacing * 2, Game_Constants.grid_spacing), 3),

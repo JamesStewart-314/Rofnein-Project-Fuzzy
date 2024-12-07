@@ -160,40 +160,40 @@ def change_level(screen: object, current_world: World, current_player: Character
     enemy_projectiles_group.empty()
     leafs_group.empty()
 
-    if level in {1, 2}:
-        for i in range(Game_Constants.leafs_quantity):
-            leaf_image = Background_Images.Tiny_Board_Leaf
-            new_leaf = Leaf.Leaf((-30) * i * leaf_image.get_width(), random.randint(0, Game_Constants.Window_height), leaf_image)
-            new_leaf.oscilation_position = random.randint(0, 100)
-            leafs_group.add(new_leaf)
+    # if level in {1, 2}:
+    #     for i in range(Game_Constants.leafs_quantity):
+    #         leaf_image = Background_Images.Tiny_Board_Leaf
+    #         new_leaf = Leaf.Leaf((-30) * i * leaf_image.get_width(), random.randint(0, Game_Constants.Window_height), leaf_image)
+    #         new_leaf.oscilation_position = random.randint(0, 100)
+    #         leafs_group.add(new_leaf)
 
-    if level == 2:
-        Worlds.Level_Spawn_Location[1] = (Game_Constants.grid_spacing * 20, Game_Constants.grid_spacing * 3)
+    # if level == 2:
+    #     Worlds.Level_Spawn_Location[1] = (Game_Constants.grid_spacing * 20, Game_Constants.grid_spacing * 3)
 
-    if (level == 3 and Worlds.current_level == 2) or (level == 6 and Worlds.current_level == 3) or \
-            (level == 7 and Worlds.current_level == 6):
-        Sound_Effects.Close_Door.play()
+    # if (level == 3 and Worlds.current_level == 2) or (level == 6 and Worlds.current_level == 3) or \
+    #         (level == 7 and Worlds.current_level == 6):
+    #     Sound_Effects.Close_Door.play()
 
-    if level == 3 and Worlds.current_level in {4, 5}:
-        Worlds.Level_Enemies.__getitem__(Worlds.current_level).clear()
+    # if level == 3 and Worlds.current_level in {4, 5}:
+    #     Worlds.Level_Enemies.__getitem__(Worlds.current_level).clear()
 
-    if level == 4 and Worlds.current_level == 3:
-        Worlds.Level_Spawn_Location[3] = (Game_Constants.grid_spacing, Game_Constants.grid_spacing * 11)
-        checker = [element for element in Worlds.World_Raids.__getitem__(level)[1] if element]
+    # if level == 4 and Worlds.current_level == 3:
+    #     Worlds.Level_Spawn_Location[3] = (Game_Constants.grid_spacing, Game_Constants.grid_spacing * 11)
+    #     checker = [element for element in Worlds.World_Raids.__getitem__(level)[1] if element]
 
-        if bool(checker):  # If player has not defeated all raids :
-            Worlds.World_Raids.__getitem__(level)[0][0]()
+    #     if bool(checker):  # If player has not defeated all raids :
+    #         Worlds.World_Raids.__getitem__(level)[0][0]()
 
-    if level == 5 and Worlds.current_level == 3:
-        Worlds.Level_Spawn_Location[3] = (Game_Constants.grid_spacing * 39, Game_Constants.grid_spacing * 11)
-        checker = [element for element in Worlds.World_Raids.__getitem__(level)[1] if element]
+    # if level == 5 and Worlds.current_level == 3:
+    #     Worlds.Level_Spawn_Location[3] = (Game_Constants.grid_spacing * 39, Game_Constants.grid_spacing * 11)
+    #     checker = [element for element in Worlds.World_Raids.__getitem__(level)[1] if element]
 
-        if bool(checker):  # If player has not defeated all raids :
-            Worlds.World_Raids.__getitem__(level)[0][0]()
+    #     if bool(checker):  # If player has not defeated all raids :
+    #         Worlds.World_Raids.__getitem__(level)[0][0]()
 
-    if level == 1 and Worlds.current_level == 7:
-        restart(screen)
-        Game_Constants.fade_animation_cooldown = 12
+    # if level == 1 and Worlds.current_level == 7:
+    #     restart(screen)
+    #     Game_Constants.fade_animation_cooldown = 12
 
     # Changing the World's Mask :
     try:
@@ -527,12 +527,12 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
         Game_Clock.tick(Game_Constants.FPS)  # Setting FPS to 60.
         Screen.fill(Game_Constants.BLACK_COLOR)
 
-        if not enemy_list and Worlds.current_level == 7 and not Worlds.end_game:
-            next_level = (None, 1)
-            Worlds.Current_Fade_Animation = Worlds.Fade_Animation[0]
-            Worlds.end_game = True
-            Worlds.Current_Fade_Animation.change_rate = Game_Constants.second_fade_transition_rate
-            Worlds.Do_Fade = 2
+        # if not enemy_list and Worlds.current_level == 7 and not Worlds.end_game:
+        #     next_level = (None, 1)
+        #     Worlds.Current_Fade_Animation = Worlds.Fade_Animation[0]
+        #     Worlds.end_game = True
+        #     Worlds.Current_Fade_Animation.change_rate = Game_Constants.second_fade_transition_rate
+        #     Worlds.Do_Fade = 2
 
         if current_player.alive:  # if Player still alive :
 
@@ -639,12 +639,8 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
                 for music in Sound_Effects.Dungeon_Music:
                     music.stop()
 
-                if not enemy_list:
-                    Sound_Effects.Boss_Fight_Music[1].stop()
-                    Sound_Effects.Boss_Fight_Music[0].play_loop()
-                else:
-                    Sound_Effects.Boss_Fight_Music[0].stop()
-                    Sound_Effects.Boss_Fight_Music[1].play_loop()
+                Sound_Effects.Boss_Fight_Music[1].stop()
+                Sound_Effects.Boss_Fight_Music[0].play_loop()
 
             # Defining initial speed :
             dx = 0
@@ -1193,8 +1189,8 @@ def restart(screen: object) -> None:
 
     Seventh_World_Enemies = []
 
-    Demon_Boss = Monster.Monster(Game_Constants.Window_width / 2, Game_Constants.Window_height / 2 - 200, "demon")
-    Seventh_World_Enemies.append(Demon_Boss)
+    # Demon_Boss = Monster.Monster(Game_Constants.Window_width / 2, Game_Constants.Window_height / 2 - 200, "demon")
+    # Seventh_World_Enemies.append(Demon_Boss)
 
     Worlds.Level_Enemies[7] = Seventh_World_Enemies
 
