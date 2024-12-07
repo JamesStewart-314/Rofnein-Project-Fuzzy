@@ -574,12 +574,12 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
                 for music in Sound_Effects.Boss_Fight_Music:
                     music.stop()
 
-                if not enemy_list:
-                    Sound_Effects.Second_Level_Music[1].stop()
-                    Sound_Effects.Second_Level_Music[0].play_loop()
-                else:
-                    Sound_Effects.Second_Level_Music[0].stop()
-                    Sound_Effects.Second_Level_Music[1].play_loop()
+                # if not enemy_list:
+                #     Sound_Effects.Second_Level_Music[1].stop()
+                #     Sound_Effects.Second_Level_Music[0].play_loop()
+                # else:
+                #     Sound_Effects.Second_Level_Music[0].stop()
+                #     Sound_Effects.Second_Level_Music[1].play_loop()
 
             elif Worlds.current_level == 3:
 
@@ -590,8 +590,8 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
                 for music in Sound_Effects.Boss_Fight_Music:
                     music.stop()
 
-                Sound_Effects.Dungeon_Music[1].stop()
-                Sound_Effects.Dungeon_Music[0].play_loop()
+                # Sound_Effects.Dungeon_Music[1].stop()
+                # Sound_Effects.Dungeon_Music[0].play_loop()
 
             elif Worlds.current_level in {4, 5}:
 
@@ -602,14 +602,14 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
                 for music in Sound_Effects.Boss_Fight_Music:
                     music.stop()
 
-                if not (functools.reduce(lambda aux_1, aux_2: aux_1 or aux_2,
-                                         Worlds.World_Raids.__getitem__(Worlds.current_level)[1])):
+                # if not (functools.reduce(lambda aux_1, aux_2: aux_1 or aux_2,
+                #                          Worlds.World_Raids.__getitem__(Worlds.current_level)[1])):
 
-                    Sound_Effects.Dungeon_Music[1].stop()
-                    Sound_Effects.Dungeon_Music[0].play_loop()
-                else:
-                    Sound_Effects.Dungeon_Music[0].stop()
-                    Sound_Effects.Dungeon_Music[1].play_loop()
+                #     Sound_Effects.Dungeon_Music[1].stop()
+                #     Sound_Effects.Dungeon_Music[0].play_loop()
+                # else:
+                #     Sound_Effects.Dungeon_Music[0].stop()
+                #     Sound_Effects.Dungeon_Music[1].play_loop()
 
             elif Worlds.current_level == 6:
 
@@ -620,15 +620,15 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
                 for music in Sound_Effects.Boss_Fight_Music:
                     music.stop()
 
-                if (functools.reduce(lambda aux_1, aux_2: aux_1 or aux_2,
-                                     Worlds.World_Raids.__getitem__(Worlds.current_level)[1])) and \
-                        "Gold_bow" in current_player.weapons_inventory:
+                # if (functools.reduce(lambda aux_1, aux_2: aux_1 or aux_2,
+                #                      Worlds.World_Raids.__getitem__(Worlds.current_level)[1])) and \
+                #         "Gold_bow" in current_player.weapons_inventory:
 
-                    Sound_Effects.Dungeon_Music[0].stop()
-                    Sound_Effects.Dungeon_Music[1].play_loop()
-                else:
-                    Sound_Effects.Dungeon_Music[1].stop()
-                    Sound_Effects.Dungeon_Music[0].play_loop()
+                #     Sound_Effects.Dungeon_Music[0].stop()
+                #     Sound_Effects.Dungeon_Music[1].play_loop()
+                # else:
+                #     Sound_Effects.Dungeon_Music[1].stop()
+                #     Sound_Effects.Dungeon_Music[0].play_loop()
 
             elif Worlds.current_level == 7:
 
@@ -639,8 +639,12 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
                 for music in Sound_Effects.Dungeon_Music:
                     music.stop()
 
-                Sound_Effects.Boss_Fight_Music[1].stop()
-                Sound_Effects.Boss_Fight_Music[0].play_loop()
+                if enemy_list:
+                    Sound_Effects.Boss_Fight_Music[1].stop()
+                    Sound_Effects.Boss_Fight_Music[0].play_loop()
+                else:
+                    Sound_Effects.Boss_Fight_Music[0].stop()
+                    Sound_Effects.Boss_Fight_Music[1].play_loop()
 
             # Defining initial speed :
             dx = 0
