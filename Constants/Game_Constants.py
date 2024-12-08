@@ -94,6 +94,9 @@ level_text_time: int | float = 3000
 
 leafs_quantity: int = 3
 
+tempos_waves_derrotadas = []
+dano_fuzzy = 1
+
 # ------------------------------- COLORS SECTION ------------------------------- #
 
 BLACK_COLOR: tuple[int, int, int] | list[int] = (0, 0, 0)

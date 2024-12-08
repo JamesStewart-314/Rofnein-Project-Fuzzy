@@ -50,7 +50,7 @@ half_heart = Heart.Heart("half_heart", 0, 0)
 empty_heart = Heart.Heart("empty_heart", 0, 0)
 
 coin_static_image = Item.Item(85, 45, "static_coin", can_collect=False)
-tempos_waves_derrotadas = []
+
 
 
 def draw_info(current_palyer: object, screen: object, damage_text_group) -> None:
@@ -938,7 +938,7 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
         # Drawing Enemies :
         for enemy in enemy_list:
             enemy.draw(Screen)
-        print(tempos_waves_derrotadas)
+        print(Game_Constants.dano_fuzzy)
         # Drawing Weapons :
         weapon.draw(Screen, current_player)
 
@@ -1496,11 +1496,26 @@ def raid(current_player: Character, quantity: int, frequency: Union[int, float],
 
             fim = time.time()
             tempo_decorrido= fim - inicio
-            if not tempos_waves_derrotadas:
-                tempos_waves_derrotadas.append(round(tempo_decorrido,3))
-            else:
-                tempos_waves_derrotadas.append(round(tempo_decorrido,3)- round((len(tempos_waves_derrotadas)-1)))
 
+            if not Game_Constants.tempos_waves_derrotadas:
+                Game_Constants.tempos_waves_derrotadas.append(round(tempo_decorrido,3))
+            else:
+                Game_Constants.tempos_waves_derrotadas.append(round(tempo_decorrido,3)- round((len(Game_Constants.tempos_waves_derrotadas)-1)))
+            
+            if Game_Constants.tempos_waves_derrotadas:
+                somatorio = Game_Constants.tempos_waves_derrotadas
+                media_tempo = sum(somatorio) / len(Game_Constants.tempos_waves_derrotadas)
+                
+                if media_tempo<4.5:
+                    Game_Constants.dano_fuzzy=2
+                elif media_tempo>=4.5 and media_tempo<5.5:
+                    Game_Constants.dano_fuzzy=1.75
+                elif media_tempo>= 5.5 and media_tempo<6.5:
+                    Game_Constants.dano_fuzzy=1.25
+                elif media_tempo>=6.5 and media_tempo<7.5:
+                    Game_Constants.dano_fuzzy=1
+                elif media_tempo>= 7.5:
+                    Game_Constants.dano_fuzzy=0.75
             # If player has defeated the Raid :
             Worlds.World_Raids.__getitem__(Worlds.current_level)[1][Worlds.raid_index] = False
 

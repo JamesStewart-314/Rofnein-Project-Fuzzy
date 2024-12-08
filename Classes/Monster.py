@@ -10,6 +10,7 @@ import Assets.Monster_Images
 from Assets import Sound_Effects
 from Assets import Health_Bar
 from MyFunctions import MyFunctions
+from MyFunctions import MyFunctions_2
 from Constants import Game_Constants
 from Classes import Boss_Fireball
 from Classes import Bone
@@ -26,12 +27,12 @@ class Monster:
     # Dictionary of monsters with their respective images and health :
     # Monster = [ < Idle Animation >, < Running Animation >, < Monster Health >, < Monster Damage >, < Monster Speed >, < Shoot Cooldown (ms) > ]
     monster_dict = dict(
-        imp=[Assets.Monster_Images.Imp_Idle_Animation, Assets.Monster_Images.Imp_Run_Animation, 100, 10, 1, 0],
-        skeleton=[Assets.Monster_Images.Skeleton_Idle_Animation, Assets.Monster_Images.Skeleton_Run_Animation, 75, 10,
+        imp=[Assets.Monster_Images.Imp_Idle_Animation, Assets.Monster_Images.Imp_Run_Animation, 100, 10*Game_Constants.dano_fuzzy, 1, 0],
+        skeleton=[Assets.Monster_Images.Skeleton_Idle_Animation, Assets.Monster_Images.Skeleton_Run_Animation, 75, 10*Game_Constants.dano_fuzzy,
                   1.7, 2000],
-        goblin=[Assets.Monster_Images.Goblin_Idle_Animation, Assets.Monster_Images.Goblin_Run_Animation, 200, 10, 3, 0],
-        muddy=[Assets.Monster_Images.Muddy_Idle_Animation, Assets.Monster_Images.Muddy_Run_Animation, 300, 20, 2, 0],
-        zombie=[Assets.Monster_Images.Zombie_Idle_Animation, Assets.Monster_Images.Zombie_Run_Animation, 125, 10, 1.5,
+        goblin=[Assets.Monster_Images.Goblin_Idle_Animation, Assets.Monster_Images.Goblin_Run_Animation, 200, 10*Game_Constants.dano_fuzzy, 3, 0],
+        muddy=[Assets.Monster_Images.Muddy_Idle_Animation, Assets.Monster_Images.Muddy_Run_Animation, 300, 20*Game_Constants.dano_fuzzy, 2, 0],
+        zombie=[Assets.Monster_Images.Zombie_Idle_Animation, Assets.Monster_Images.Zombie_Run_Animation, 125, 10*Game_Constants.dano_fuzzy, 1.5,
                 0],
         demon=[Assets.Monster_Images.Demon_Idle_Animation, Assets.Monster_Images.Demon_Run_Animation, 3_000, 20, 2,
                3_000])
