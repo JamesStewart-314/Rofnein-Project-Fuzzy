@@ -96,6 +96,11 @@ leafs_quantity: int = 3
 
 tempos_waves_derrotadas = []
 dano_fuzzy = 1
+level_7 =False
+steel_coletado =False
+gold_coletado = False
+
+
 
 # ------------------------------- COLORS SECTION ------------------------------- #
 

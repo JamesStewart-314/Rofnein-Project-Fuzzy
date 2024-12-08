@@ -51,9 +51,12 @@ empty_heart = Heart.Heart("empty_heart", 0, 0)
 
 coin_static_image = Item.Item(85, 45, "static_coin", can_collect=False)
 
+coin_loja_1 =Item.Item(Game_Constants.grid_spacing * 1.1, Game_Constants.grid_spacing * 19.6,"coin",can_collect=False)
+coin_loja_2 =Item.Item(Game_Constants.grid_spacing * 4.1, Game_Constants.grid_spacing * 19.6,"coin",can_collect=False)
 
 
-def draw_info(current_palyer: object, screen: object, damage_text_group) -> None:
+
+def draw_info(current_palyer: object, screen: object, damage_text_group,item_group) -> None:
     # pygame.draw.rect(screen, Game_Constants.BLACK_COLOR, (0, 0, Game_Constants.Window_width,
     #                                                     Game_Constants.info_bar_height))
     # pygame.draw.line(screen, Game_Constants.WHITE_COLOR, (0, Game_Constants.info_bar_height),
@@ -121,6 +124,18 @@ def draw_info(current_palyer: object, screen: object, damage_text_group) -> None
     screen.blit(*Teleport_Orb)
     screen.blit(*Ultimate_Orb)
     screen.blit(*Regeneration_Orb)
+    if Game_Constants.level_7:
+        if Game_Constants.steel_coletado ==False:
+            ShowText.draw_text(f"20", "AtariClassic", Game_Constants.WHITE_COLOR, Game_Constants.grid_spacing * 1.5, Game_Constants.grid_spacing * 19.6, screen)
+            screen.blit(coin_loja_1.image, coin_loja_1.rect.center)
+            coin_loja_1.update(screen, item_group)
+            
+        if Game_Constants.gold_coletado ==False:
+            ShowText.draw_text(f"30", "AtariClassic", Game_Constants.WHITE_COLOR, Game_Constants.grid_spacing * 4.5, Game_Constants.grid_spacing * 19.6, screen)
+            screen.blit(coin_loja_2.image, coin_loja_2.rect.center)
+            coin_loja_2.update(screen, item_group)
+
+
 
 
 def distance(coordinates_1: Tuple[Union[int, float]], coordinates_2: Tuple[Union[int, float]]) -> float:
@@ -151,9 +166,7 @@ def change_level(screen: object, current_world: World, current_player: Character
     # Saving the items from current level :
     Worlds.Level_Items.__getitem__(Worlds.current_level).clear()  # To not duplicate the items
 
-    if Worlds.current_level not in {4, 5}:
-        for item in item_group:
-            Worlds.Level_Items.__getitem__(Worlds.current_level).append(item)
+    
 
     item_group.empty()
 
@@ -198,7 +211,10 @@ def change_level(screen: object, current_world: World, current_player: Character
     #     Game_Constants.fade_animation_cooldown = 12
     if level==7:
         Worlds.World_Raids.__getitem__(level)[0][0]()
-        
+        Game_Constants.level_7 = True
+
+
+              
 
     # Changing the World's Mask :
     try:
@@ -995,7 +1011,7 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
         Worlds.Level_Title.__getitem__(Worlds.current_level).draw(Screen)
 
         # Display Player Info :
-        draw_info(current_player, Screen, damage_text_group)
+        draw_info(current_player, Screen, damage_text_group,item_group)
 
         # Display of the Game Grid :
         # MyFunctions_2.draw_grid(Screen)
@@ -1242,12 +1258,12 @@ def restart(screen: object) -> None:
     Worlds.Level_Items = {
         1: [Item.Item(Game_Constants.grid_spacing * 37 + 16, Game_Constants.grid_spacing * 17, "emerald")],
         2: [],
-        3: [Item.Item(Game_Constants.grid_spacing * 19 + 16, Game_Constants.grid_spacing * 11,
-                      "steel_bow")],
+        3: [],
         4: [], 5: [],
-        6: [Item.Item(Game_Constants.grid_spacing * 19 + 16, Game_Constants.grid_spacing * 11,
-                      "gold_bow")],
-        7: []}
+        6: [],
+        7: [Item.Item(Game_Constants.grid_spacing * 1, Game_Constants.grid_spacing * 20.7,
+                      "steel_bow"),Item.Item(Game_Constants.grid_spacing * 4, Game_Constants.grid_spacing * 20.7,
+                      "gold_bow")]}
 
     Worlds.current_player = Character.Character(Game_Constants.Window_width / 2 - 16 * Game_Constants.grid_spacing - 16,
                                                 Game_Constants.Window_height / 2 + 18, Game_Constants.player_standard_health)
@@ -1426,6 +1442,7 @@ def raid(current_player: Character, quantity: int, frequency: Union[int, float],
     global interrupt_flag
 
     def run_raid() -> bool:
+
         inicio = time.time()
         nonlocal coordinate_x, coordinate_y, __counter__, __interval_time__
 

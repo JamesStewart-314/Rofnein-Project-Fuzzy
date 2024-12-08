@@ -48,24 +48,28 @@ class Item(pygame.sprite.Sprite):
                     current_player.money += 10
                     text_group.add(ShowText.ShowText(self.rect.centerx, self.rect.centery,
                                                      str(10), Game_Constants.YELLOW_COLOR, "Micro"))
+                    self.kill()
 
                 elif self.item_type == "silver_coin":
                     Sound_Effects.Silver_Coin_Collect.play()
                     current_player.money += 30
                     text_group.add(ShowText.ShowText(self.rect.centerx, self.rect.centery,
                                                      str(30), Game_Constants.SILVER_COLOR, "Micro"))
+                    self.kill()
 
                 elif self.item_type == "red_coin":
                     Sound_Effects.Red_Coin_Collect.play()
                     current_player.money += 50
                     text_group.add(ShowText.ShowText(self.rect.centerx, self.rect.centery,
                                                      str(50), Game_Constants.RED_COLOR, "Micro"))
+                    self.kill()
 
                 elif self.item_type == "emerald":
                     Sound_Effects.Emerald_Collect.play()
                     current_player.money += 100
                     text_group.add(ShowText.ShowText(self.rect.centerx, self.rect.centery,
                                                      str(100), Game_Constants.GREEN_COLOR, "Micro"))
+                    self.kill()
 
                 elif self.item_type == "red_potion":
                     Sound_Effects.Red_Potion_Collect.play()
@@ -73,29 +77,33 @@ class Item(pygame.sprite.Sprite):
                     text_group.add(ShowText.ShowText(self.rect.centerx, self.rect.centery,
                                                      "+ " + str(Game_Constants.potion_heal),
                                                      Game_Constants.CRIMSON_RED_COLOR, "Micro"))
+                    self.kill()
                     if current_player.health > 100:
                         current_player.health = 100
 
-                elif self.item_type == "steel_bow":
+                elif self.item_type == "steel_bow" and current_player.money>=20:
                     current_player.weapons_inventory.append("Steel_bow")
+                    current_player.money-= 20
+                    Game_Constants.steel_coletado = True
                     Sound_Effects.Weapon_Collect.play_loop()
-
+                    self.kill()
                     text_group.add(ShowText.ShowText(self.rect.centerx + 28, self.rect.centery, "Steel Bow Acquired",
                                                      Game_Constants.SILVER_COLOR, "Micro", kill_time=1100, speed=0.6))
 
-                elif self.item_type == "gold_bow":
+                elif self.item_type == "gold_bow" and current_player.money>=30:
                     current_player.weapons_inventory.append("Gold_bow")
+                    current_player.money-= 30
+                    Game_Constants.gold_coletado = True
                     Sound_Effects.Weapon_Collect.play_loop()
 
                     text_group.add(ShowText.ShowText(self.rect.centerx + 28, self.rect.centery, "Gold Bow Acquired",
                                                      Game_Constants.YELLOW_COLOR, "Micro", kill_time=1100, speed=0.6))
 
-                    checker = [element for element in Worlds.World_Raids.__getitem__(6)[1] if element]
+                    
+                    self.kill()
+                    
 
-                    if bool(checker):  # If player has not defeated all raids :
-                        Worlds.World_Raids.__getitem__(6)[0][0]()
-
-                self.kill()
+                
 
         # Handle Animation :
         self.image = self.animation[self.frame_index]

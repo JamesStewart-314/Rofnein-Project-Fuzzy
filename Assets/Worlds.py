@@ -633,12 +633,14 @@ Level_Enemies = {1: [], 2: Second_World_Enemies, 3: [], 4: [], 5: [], 6: [], 7: 
 
 Level_Items = {1: [Item.Item(Game_Constants.grid_spacing * 37 + 16, Game_Constants.grid_spacing * 17, "emerald")],
                2: [],
-               3: [Item.Item(Game_Constants.grid_spacing * 19 + 16, Game_Constants.grid_spacing * 11,
-                             "steel_bow")],
-               4: [], 5: [],
-               6: [Item.Item(Game_Constants.grid_spacing * 19 + 16, Game_Constants.grid_spacing * 11,
-                             "gold_bow")],
-               7: []}
+               3: [],
+               4: [], 
+               5: [],
+               6: [],
+               7: [Item.Item(Game_Constants.grid_spacing * 1.02, Game_Constants.grid_spacing * 20.5,
+                      "static_coin",can_collect=False),Item.Item(Game_Constants.grid_spacing * 19 + 16, Game_Constants.grid_spacing * 11,
+                      "steel_bow"),Item.Item(Game_Constants.grid_spacing * 4, Game_Constants.grid_spacing * 20,
+                      "gold_bow")]}
 
 World_Raids = {1: [], 2: [], 3: [],
 
