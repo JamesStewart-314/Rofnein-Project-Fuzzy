@@ -51,8 +51,12 @@ empty_heart = Heart.Heart("empty_heart", 0, 0)
 
 coin_static_image = Item.Item(85, 45, "static_coin", can_collect=False)
 
+coin_loja_1 =Item.Item(Game_Constants.grid_spacing * 1.1, Game_Constants.grid_spacing * 19.6,"coin",can_collect=False)
+coin_loja_2 =Item.Item(Game_Constants.grid_spacing * 4.1, Game_Constants.grid_spacing * 19.6,"coin",can_collect=False)
 
-def draw_info(current_palyer: object, screen: object, damage_text_group) -> None:
+
+
+def draw_info(current_palyer: object, screen: object, damage_text_group,item_group) -> None:
     # pygame.draw.rect(screen, Game_Constants.BLACK_COLOR, (0, 0, Game_Constants.Window_width,
     #                                                     Game_Constants.info_bar_height))
     # pygame.draw.line(screen, Game_Constants.WHITE_COLOR, (0, Game_Constants.info_bar_height),
@@ -120,6 +124,18 @@ def draw_info(current_palyer: object, screen: object, damage_text_group) -> None
     screen.blit(*Teleport_Orb)
     screen.blit(*Ultimate_Orb)
     screen.blit(*Regeneration_Orb)
+    if Game_Constants.level_7:
+        if Game_Constants.steel_coletado ==False:
+            ShowText.draw_text(f"20", "AtariClassic", Game_Constants.WHITE_COLOR, Game_Constants.grid_spacing * 1.5, Game_Constants.grid_spacing * 19.6, screen)
+            screen.blit(coin_loja_1.image, coin_loja_1.rect.center)
+            coin_loja_1.update(screen, item_group)
+            
+        if Game_Constants.gold_coletado ==False:
+            ShowText.draw_text(f"30", "AtariClassic", Game_Constants.WHITE_COLOR, Game_Constants.grid_spacing * 4.5, Game_Constants.grid_spacing * 19.6, screen)
+            screen.blit(coin_loja_2.image, coin_loja_2.rect.center)
+            coin_loja_2.update(screen, item_group)
+
+
 
 
 def distance(coordinates_1: Tuple[Union[int, float]], coordinates_2: Tuple[Union[int, float]]) -> float:
@@ -127,6 +143,7 @@ def distance(coordinates_1: Tuple[Union[int, float]], coordinates_2: Tuple[Union
 
 
 def draw_grid(screen: object) -> None:
+    
     for x in range(Game_Constants.grides_number):
         # Vertical Lines :
         pygame.draw.line(screen, Game_Constants.WHITE_COLOR, (x * Game_Constants.grid_spacing, 0),
@@ -149,9 +166,7 @@ def change_level(screen: object, current_world: World, current_player: Character
     # Saving the items from current level :
     Worlds.Level_Items.__getitem__(Worlds.current_level).clear()  # To not duplicate the items
 
-    if Worlds.current_level not in {4, 5}:
-        for item in item_group:
-            Worlds.Level_Items.__getitem__(Worlds.current_level).append(item)
+    
 
     item_group.empty()
 
@@ -160,40 +175,46 @@ def change_level(screen: object, current_world: World, current_player: Character
     enemy_projectiles_group.empty()
     leafs_group.empty()
 
-    if level in {1, 2}:
-        for i in range(Game_Constants.leafs_quantity):
-            leaf_image = Background_Images.Tiny_Board_Leaf
-            new_leaf = Leaf.Leaf((-30) * i * leaf_image.get_width(), random.randint(0, Game_Constants.Window_height), leaf_image)
-            new_leaf.oscilation_position = random.randint(0, 100)
-            leafs_group.add(new_leaf)
+    # if level in {1, 2}:
+    #     for i in range(Game_Constants.leafs_quantity):
+    #         leaf_image = Background_Images.Tiny_Board_Leaf
+    #         new_leaf = Leaf.Leaf((-30) * i * leaf_image.get_width(), random.randint(0, Game_Constants.Window_height), leaf_image)
+    #         new_leaf.oscilation_position = random.randint(0, 100)
+    #         leafs_group.add(new_leaf)
 
-    if level == 2:
-        Worlds.Level_Spawn_Location[1] = (Game_Constants.grid_spacing * 20, Game_Constants.grid_spacing * 3)
+    # if level == 2:
+    #     Worlds.Level_Spawn_Location[1] = (Game_Constants.grid_spacing * 20, Game_Constants.grid_spacing * 3)
 
-    if (level == 3 and Worlds.current_level == 2) or (level == 6 and Worlds.current_level == 3) or \
-            (level == 7 and Worlds.current_level == 6):
-        Sound_Effects.Close_Door.play()
+    # if (level == 3 and Worlds.current_level == 2) or (level == 6 and Worlds.current_level == 3) or \
+    #         (level == 7 and Worlds.current_level == 6):
+    #     Sound_Effects.Close_Door.play()
 
-    if level == 3 and Worlds.current_level in {4, 5}:
-        Worlds.Level_Enemies.__getitem__(Worlds.current_level).clear()
+    # if level == 3 and Worlds.current_level in {4, 5}:
+    #     Worlds.Level_Enemies.__getitem__(Worlds.current_level).clear()
 
-    if level == 4 and Worlds.current_level == 3:
-        Worlds.Level_Spawn_Location[3] = (Game_Constants.grid_spacing, Game_Constants.grid_spacing * 11)
-        checker = [element for element in Worlds.World_Raids.__getitem__(level)[1] if element]
+    # if level == 4 and Worlds.current_level == 3:
+    #     Worlds.Level_Spawn_Location[3] = (Game_Constants.grid_spacing, Game_Constants.grid_spacing * 11)
+    #     checker = [element for element in Worlds.World_Raids.__getitem__(level)[1] if element]
 
-        if bool(checker):  # If player has not defeated all raids :
-            Worlds.World_Raids.__getitem__(level)[0][0]()
+    #     if bool(checker):  # If player has not defeated all raids :
+    #         Worlds.World_Raids.__getitem__(level)[0][0]()
 
-    if level == 5 and Worlds.current_level == 3:
-        Worlds.Level_Spawn_Location[3] = (Game_Constants.grid_spacing * 39, Game_Constants.grid_spacing * 11)
-        checker = [element for element in Worlds.World_Raids.__getitem__(level)[1] if element]
+    # if level == 5 and Worlds.current_level == 3:
+    #     Worlds.Level_Spawn_Location[3] = (Game_Constants.grid_spacing * 39, Game_Constants.grid_spacing * 11)
+    #     checker = [element for element in Worlds.World_Raids.__getitem__(level)[1] if element]
 
-        if bool(checker):  # If player has not defeated all raids :
-            Worlds.World_Raids.__getitem__(level)[0][0]()
+    #     if bool(checker):  # If player has not defeated all raids :
+    #         Worlds.World_Raids.__getitem__(level)[0][0]()
 
-    if level == 1 and Worlds.current_level == 7:
-        restart(screen)
-        Game_Constants.fade_animation_cooldown = 12
+    # if level == 1 and Worlds.current_level == 7:
+    #     restart(screen)
+    #     Game_Constants.fade_animation_cooldown = 12
+    if level==7:
+        Worlds.World_Raids.__getitem__(level)[0][0]()
+        Game_Constants.level_7 = True
+
+
+              
 
     # Changing the World's Mask :
     try:
@@ -277,16 +298,17 @@ def open_door(interaction_info: list) -> None:
                 Sound_Effects.Closed_Door.play_loop()
 
 
+
 def menu(screen: object, is_fullscreen: bool = False) -> None:
     global interrupt_flag
-
+    
     Screen = screen
     FullScreen = is_fullscreen
 
     Worlds.Start_Fade = True
     Worlds.Current_Fade_Animation = Worlds.Fade_Animation[1]
     Worlds.Do_Fade = 1
-
+    
     for fade in Worlds.Fade_Animation:
         fade.change_rate = Game_Constants.second_fade_transition_rate
 
@@ -336,7 +358,7 @@ def menu(screen: object, is_fullscreen: bool = False) -> None:
 
     Game_Loop = True
     while Game_Loop:
-
+        
         Screen.fill(Game_Constants.BLACK_COLOR)
 
         game_clock.tick(Game_Constants.FPS)
@@ -352,7 +374,7 @@ def menu(screen: object, is_fullscreen: bool = False) -> None:
         Sound_Effects.Menu_Music.play_loop()
 
         left_mouse_click = pygame.mouse.get_pressed()[0]
-
+        
         if not pointer_rect.colliderect(Play_Button.rect):
             Play_Button.draw(Screen)
             Play_Button.update()
@@ -527,12 +549,12 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
         Game_Clock.tick(Game_Constants.FPS)  # Setting FPS to 60.
         Screen.fill(Game_Constants.BLACK_COLOR)
 
-        if not enemy_list and Worlds.current_level == 7 and not Worlds.end_game:
-            next_level = (None, 1)
-            Worlds.Current_Fade_Animation = Worlds.Fade_Animation[0]
-            Worlds.end_game = True
-            Worlds.Current_Fade_Animation.change_rate = Game_Constants.second_fade_transition_rate
-            Worlds.Do_Fade = 2
+        # if not enemy_list and Worlds.current_level == 7 and not Worlds.end_game:
+        #     next_level = (None, 1)
+        #     Worlds.Current_Fade_Animation = Worlds.Fade_Animation[0]
+        #     Worlds.end_game = True
+        #     Worlds.Current_Fade_Animation.change_rate = Game_Constants.second_fade_transition_rate
+        #     Worlds.Do_Fade = 2
 
         if current_player.alive:  # if Player still alive :
 
@@ -574,12 +596,12 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
                 for music in Sound_Effects.Boss_Fight_Music:
                     music.stop()
 
-                if not enemy_list:
-                    Sound_Effects.Second_Level_Music[1].stop()
-                    Sound_Effects.Second_Level_Music[0].play_loop()
-                else:
-                    Sound_Effects.Second_Level_Music[0].stop()
-                    Sound_Effects.Second_Level_Music[1].play_loop()
+                # if not enemy_list:
+                #     Sound_Effects.Second_Level_Music[1].stop()
+                #     Sound_Effects.Second_Level_Music[0].play_loop()
+                # else:
+                #     Sound_Effects.Second_Level_Music[0].stop()
+                #     Sound_Effects.Second_Level_Music[1].play_loop()
 
             elif Worlds.current_level == 3:
 
@@ -590,8 +612,8 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
                 for music in Sound_Effects.Boss_Fight_Music:
                     music.stop()
 
-                Sound_Effects.Dungeon_Music[1].stop()
-                Sound_Effects.Dungeon_Music[0].play_loop()
+                # Sound_Effects.Dungeon_Music[1].stop()
+                # Sound_Effects.Dungeon_Music[0].play_loop()
 
             elif Worlds.current_level in {4, 5}:
 
@@ -602,14 +624,14 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
                 for music in Sound_Effects.Boss_Fight_Music:
                     music.stop()
 
-                if not (functools.reduce(lambda aux_1, aux_2: aux_1 or aux_2,
-                                         Worlds.World_Raids.__getitem__(Worlds.current_level)[1])):
+                # if not (functools.reduce(lambda aux_1, aux_2: aux_1 or aux_2,
+                #                          Worlds.World_Raids.__getitem__(Worlds.current_level)[1])):
 
-                    Sound_Effects.Dungeon_Music[1].stop()
-                    Sound_Effects.Dungeon_Music[0].play_loop()
-                else:
-                    Sound_Effects.Dungeon_Music[0].stop()
-                    Sound_Effects.Dungeon_Music[1].play_loop()
+                #     Sound_Effects.Dungeon_Music[1].stop()
+                #     Sound_Effects.Dungeon_Music[0].play_loop()
+                # else:
+                #     Sound_Effects.Dungeon_Music[0].stop()
+                #     Sound_Effects.Dungeon_Music[1].play_loop()
 
             elif Worlds.current_level == 6:
 
@@ -620,15 +642,15 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
                 for music in Sound_Effects.Boss_Fight_Music:
                     music.stop()
 
-                if (functools.reduce(lambda aux_1, aux_2: aux_1 or aux_2,
-                                     Worlds.World_Raids.__getitem__(Worlds.current_level)[1])) and \
-                        "Gold_bow" in current_player.weapons_inventory:
+                # if (functools.reduce(lambda aux_1, aux_2: aux_1 or aux_2,
+                #                      Worlds.World_Raids.__getitem__(Worlds.current_level)[1])) and \
+                #         "Gold_bow" in current_player.weapons_inventory:
 
-                    Sound_Effects.Dungeon_Music[0].stop()
-                    Sound_Effects.Dungeon_Music[1].play_loop()
-                else:
-                    Sound_Effects.Dungeon_Music[1].stop()
-                    Sound_Effects.Dungeon_Music[0].play_loop()
+                #     Sound_Effects.Dungeon_Music[0].stop()
+                #     Sound_Effects.Dungeon_Music[1].play_loop()
+                # else:
+                #     Sound_Effects.Dungeon_Music[1].stop()
+                #     Sound_Effects.Dungeon_Music[0].play_loop()
 
             elif Worlds.current_level == 7:
 
@@ -639,7 +661,7 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
                 for music in Sound_Effects.Dungeon_Music:
                     music.stop()
 
-                if not enemy_list:
+                if enemy_list:
                     Sound_Effects.Boss_Fight_Music[1].stop()
                     Sound_Effects.Boss_Fight_Music[0].play_loop()
                 else:
@@ -932,7 +954,7 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
         # Drawing Enemies :
         for enemy in enemy_list:
             enemy.draw(Screen)
-
+        print(Game_Constants.dano_fuzzy)
         # Drawing Weapons :
         weapon.draw(Screen, current_player)
 
@@ -989,7 +1011,7 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
         Worlds.Level_Title.__getitem__(Worlds.current_level).draw(Screen)
 
         # Display Player Info :
-        draw_info(current_player, Screen, damage_text_group)
+        draw_info(current_player, Screen, damage_text_group,item_group)
 
         # Display of the Game Grid :
         # MyFunctions_2.draw_grid(Screen)
@@ -1193,8 +1215,8 @@ def restart(screen: object) -> None:
 
     Seventh_World_Enemies = []
 
-    Demon_Boss = Monster.Monster(Game_Constants.Window_width / 2, Game_Constants.Window_height / 2 - 200, "demon")
-    Seventh_World_Enemies.append(Demon_Boss)
+    # Demon_Boss = Monster.Monster(Game_Constants.Window_width / 2, Game_Constants.Window_height / 2 - 200, "demon")
+    # Seventh_World_Enemies.append(Demon_Boss)
 
     Worlds.Level_Enemies[7] = Seventh_World_Enemies
 
@@ -1228,17 +1250,20 @@ def restart(screen: object) -> None:
                     lambda: raid(Worlds.current_player, 4, 0, Worlds.Level_Enemies.__getitem__(6), wanted_monsters_list=["muddy", "goblin"]),
                     lambda: raid(Worlds.current_player, 5, 0, Worlds.Level_Enemies.__getitem__(6), wanted_monsters_list=["muddy"])], [True, True, True, True]),
 
-               7: []}
+               7: ([lambda: raid(Worlds.current_player, 6, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["zombie", "skeleton"]),
+                    lambda: raid(Worlds.current_player, 4, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["goblin"]),
+                    lambda: raid(Worlds.current_player, 4, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["muddy", "goblin"]),
+                    lambda: raid(Worlds.current_player, 5, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["muddy"])], [True, True, True, True])}
 
     Worlds.Level_Items = {
         1: [Item.Item(Game_Constants.grid_spacing * 37 + 16, Game_Constants.grid_spacing * 17, "emerald")],
         2: [],
-        3: [Item.Item(Game_Constants.grid_spacing * 19 + 16, Game_Constants.grid_spacing * 11,
-                      "steel_bow")],
+        3: [],
         4: [], 5: [],
-        6: [Item.Item(Game_Constants.grid_spacing * 19 + 16, Game_Constants.grid_spacing * 11,
-                      "gold_bow")],
-        7: []}
+        6: [],
+        7: [Item.Item(Game_Constants.grid_spacing * 1, Game_Constants.grid_spacing * 20.7,
+                      "steel_bow"),Item.Item(Game_Constants.grid_spacing * 4, Game_Constants.grid_spacing * 20.7,
+                      "gold_bow")]}
 
     Worlds.current_player = Character.Character(Game_Constants.Window_width / 2 - 16 * Game_Constants.grid_spacing - 16,
                                                 Game_Constants.Window_height / 2 + 18, Game_Constants.player_standard_health)
@@ -1418,6 +1443,7 @@ def raid(current_player: Character, quantity: int, frequency: Union[int, float],
 
     def run_raid() -> bool:
 
+        inicio = time.time()
         nonlocal coordinate_x, coordinate_y, __counter__, __interval_time__
 
         # Don't change the variables "__counter__" and "__interval_time__". It is a parameter used to generate the
@@ -1485,10 +1511,28 @@ def raid(current_player: Character, quantity: int, frequency: Union[int, float],
                 if interrupt_flag:
                     return True
 
-            if Worlds.current_level not in {4, 5, 6}:
-                Worlds.raid_index = 0
-                return True
+            fim = time.time()
+            tempo_decorrido= fim - inicio
 
+            if not Game_Constants.tempos_waves_derrotadas:
+                Game_Constants.tempos_waves_derrotadas.append(round(tempo_decorrido,3))
+            else:
+                Game_Constants.tempos_waves_derrotadas.append(round(tempo_decorrido,3)- round((len(Game_Constants.tempos_waves_derrotadas)-1)))
+            
+            if Game_Constants.tempos_waves_derrotadas:
+                somatorio = Game_Constants.tempos_waves_derrotadas
+                media_tempo = sum(somatorio) / len(Game_Constants.tempos_waves_derrotadas)
+                
+                if media_tempo<4.5:
+                    Game_Constants.dano_fuzzy=2
+                elif media_tempo>=4.5 and media_tempo<5.5:
+                    Game_Constants.dano_fuzzy=1.75
+                elif media_tempo>= 5.5 and media_tempo<6.5:
+                    Game_Constants.dano_fuzzy=1.25
+                elif media_tempo>=6.5 and media_tempo<7.5:
+                    Game_Constants.dano_fuzzy=1
+                elif media_tempo>= 7.5:
+                    Game_Constants.dano_fuzzy=0.75
             # If player has defeated the Raid :
             Worlds.World_Raids.__getitem__(Worlds.current_level)[1][Worlds.raid_index] = False
 
@@ -1497,6 +1541,8 @@ def raid(current_player: Character, quantity: int, frequency: Union[int, float],
             # Calling the next raid :
             try:
                 Worlds.World_Raids.__getitem__(Worlds.current_level)[0][Worlds.raid_index]()
+                
+
             except IndexError:
                 Worlds.raid_index = 0
                 return True  # End of the raid.

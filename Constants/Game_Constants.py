@@ -76,7 +76,7 @@ Arrow_scale: int = 1
 Sword_scale: int = 1
 UI_Icons_Scale: int | float = 1 / 3
 
-sword_base_damage: int | float = 15
+sword_base_damage: int | float = 3000
 bone_base_damage: int | float = 10
 standard_arrow_damage: int | float = 10
 fireball_base_damage: int | float = 20
@@ -93,6 +93,14 @@ second_fade_transition_rate: int | float = 3
 level_text_time: int | float = 3000
 
 leafs_quantity: int = 3
+
+tempos_waves_derrotadas = []
+dano_fuzzy = 1
+level_7 =False
+steel_coletado =False
+gold_coletado = False
+
+
 
 # ------------------------------- COLORS SECTION ------------------------------- #
 

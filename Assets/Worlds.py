@@ -573,8 +573,8 @@ Seventh_World_Objects.append(Wall_Rect_4)
 
 Seventh_World_Enemies = []
 
-Demon_Boss = Monster.Monster(Game_Constants.Window_width / 2, Game_Constants.Window_height / 2 - 200, "demon")
-Seventh_World_Enemies.append(Demon_Boss)
+# Demon_Boss = Monster.Monster(Game_Constants.Window_width / 2, Game_Constants.Window_height / 2 - 200, "demon")
+# Seventh_World_Enemies.append(Demon_Boss)
 
 # ------------------------------------------------------------------------------------------------------------------ #
 
@@ -588,7 +588,7 @@ Level_Interactions = {1: First_World_Rect_Interactions, 2: Second_World_Rect_Int
 
 # Square to get to the next level :
 Next_Level_Location = {1: ((pygame.rect.Rect(Game_Constants.grid_spacing * 19, 0,
-                                             Game_Constants.grid_spacing * 2, Game_Constants.grid_spacing), 2), None),
+                                             Game_Constants.grid_spacing * 2, Game_Constants.grid_spacing), 7), None),
 
                        2: ((pygame.rect.Rect(Game_Constants.grid_spacing * 19, 0,
                                              Game_Constants.grid_spacing * 2, Game_Constants.grid_spacing), 3),
@@ -629,16 +629,18 @@ Level_Spawn_Location = {1: (Game_Constants.Window_width / 2 - 16 * Game_Constant
                         6: (Game_Constants.Window_width / 2, Game_Constants.Window_height - 64),
                         7: (Game_Constants.Window_width / 2, Game_Constants.Window_height - 64)}
 
-Level_Enemies = {1: [], 2: Second_World_Enemies, 3: [], 4: [], 5: [], 6: [], 7: Seventh_World_Enemies}
+Level_Enemies = {1: [], 2: Second_World_Enemies, 3: [], 4: [], 5: [], 6: [], 7: []}
 
 Level_Items = {1: [Item.Item(Game_Constants.grid_spacing * 37 + 16, Game_Constants.grid_spacing * 17, "emerald")],
                2: [],
-               3: [Item.Item(Game_Constants.grid_spacing * 19 + 16, Game_Constants.grid_spacing * 11,
-                             "steel_bow")],
-               4: [], 5: [],
-               6: [Item.Item(Game_Constants.grid_spacing * 19 + 16, Game_Constants.grid_spacing * 11,
-                             "gold_bow")],
-               7: []}
+               3: [],
+               4: [], 
+               5: [],
+               6: [],
+               7: [Item.Item(Game_Constants.grid_spacing * 1.02, Game_Constants.grid_spacing * 20.5,
+                      "static_coin",can_collect=False),Item.Item(Game_Constants.grid_spacing * 19 + 16, Game_Constants.grid_spacing * 11,
+                      "steel_bow"),Item.Item(Game_Constants.grid_spacing * 4, Game_Constants.grid_spacing * 20,
+                      "gold_bow")]}
 
 World_Raids = {1: [], 2: [], 3: [],
 
@@ -655,7 +657,10 @@ World_Raids = {1: [], 2: [], 3: [],
                     lambda: MyFunctions_2.raid(current_player, 4, 0, Level_Enemies.__getitem__(6), wanted_monsters_list=["muddy", "goblin"]),
                     lambda: MyFunctions_2.raid(current_player, 5, 0, Level_Enemies.__getitem__(6), wanted_monsters_list=["muddy"])], [True, True, True, True]),
 
-               7: []}
+               7: ([lambda: MyFunctions_2.raid(current_player, 6, 0, Level_Enemies.__getitem__(7), wanted_monsters_list=["zombie", "skeleton"]),
+                    lambda: MyFunctions_2.raid(current_player, 4, 0, Level_Enemies.__getitem__(7), wanted_monsters_list=["goblin"]),
+                    lambda: MyFunctions_2.raid(current_player, 4, 0, Level_Enemies.__getitem__(7), wanted_monsters_list=["muddy", "goblin"]),
+                    lambda: MyFunctions_2.raid(current_player, 5, 0, Level_Enemies.__getitem__(7), wanted_monsters_list=["muddy"])], [True, True, True, True])}
 
 Level_Title = {1: ShowFloatingText.FloatingText((Game_Constants.Window_width - Titles_Images.Level_1_Title.get_width()) / 2,
                                            Game_Constants.Window_height / 23,
