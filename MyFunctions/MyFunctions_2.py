@@ -41,6 +41,10 @@ from Classes import Weapon
 from Classes import World
 from Assets import Player_Images
 
+import numpy as np
+import skfuzzy as fuzz
+from skfuzzy import control as ctrl
+
 pygame.init()
 
 interrupt_flag = False  # Flag to stop the recursion from raid function
@@ -954,7 +958,7 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
         # Drawing Enemies :
         for enemy in enemy_list:
             enemy.draw(Screen)
-        print(Game_Constants.dano_fuzzy)
+        print(Worlds.Level_Items)
         # Drawing Weapons :
         weapon.draw(Screen, current_player)
 
@@ -1250,20 +1254,31 @@ def restart(screen: object) -> None:
                     lambda: raid(Worlds.current_player, 4, 0, Worlds.Level_Enemies.__getitem__(6), wanted_monsters_list=["muddy", "goblin"]),
                     lambda: raid(Worlds.current_player, 5, 0, Worlds.Level_Enemies.__getitem__(6), wanted_monsters_list=["muddy"])], [True, True, True, True]),
 
-               7: ([lambda: raid(Worlds.current_player, 6, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["zombie", "skeleton"]),
-                    lambda: raid(Worlds.current_player, 4, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["goblin"]),
-                    lambda: raid(Worlds.current_player, 4, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["muddy", "goblin"]),
-                    lambda: raid(Worlds.current_player, 5, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["muddy"])], [True, True, True, True])}
+               7: ([lambda: raid(Worlds.current_player, 3, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["imp"]),
+                    lambda: raid(Worlds.current_player, 5, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["imp"]),
+                    lambda: raid(Worlds.current_player, 3, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["skeleton"]),
+                    lambda: raid(Worlds.current_player, 5, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["imp", "skeleton"]),
+                    lambda: raid(Worlds.current_player, 3, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["zombie"]),
+                    lambda: raid(Worlds.current_player, 5, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["imp", "zombie"]),
+                    lambda: raid(Worlds.current_player, 3, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["goblin"]),
+                    lambda: raid(Worlds.current_player, 6, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["goblin", "skeleton"]),
+                    lambda: raid(Worlds.current_player, 6, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["skeleton", "zombie"]),
+                    lambda: raid(Worlds.current_player, 5, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["muddy"]),
+                    lambda: raid(Worlds.current_player, 6, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["muddy", "skeleton"]),
+                    lambda: raid(Worlds.current_player, 5, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["muddy", "goblin"]),
+                    lambda: raid(Worlds.current_player, 1, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["demon"])], [True, True, True, True,True,True,True,True,True,True,True,True,True])}
 
     Worlds.Level_Items = {
-        1: [Item.Item(Game_Constants.grid_spacing * 37 + 16, Game_Constants.grid_spacing * 17, "emerald")],
+        1: [Item.Item(Game_Constants.grid_spacing * 5, Game_Constants.grid_spacing * 5, "coin"),
+            Item.Item(Game_Constants.grid_spacing * 5, Game_Constants.grid_spacing * 5, "vida_upgrade"),
+            Item.Item(Game_Constants.grid_spacing * 1, Game_Constants.grid_spacing * 20.7,"steel_bow")],
         2: [],
         3: [],
         4: [], 5: [],
         6: [],
-        7: [Item.Item(Game_Constants.grid_spacing * 1, Game_Constants.grid_spacing * 20.7,
-                      "steel_bow"),Item.Item(Game_Constants.grid_spacing * 4, Game_Constants.grid_spacing * 20.7,
-                      "gold_bow")]}
+        7: [Item.Item(Game_Constants.grid_spacing * 1.02, Game_Constants.grid_spacing * 20.5,"static_coin",can_collect=False),
+            Item.Item(Game_Constants.grid_spacing * 1, Game_Constants.grid_spacing * 20.7,"steel_bow"),
+            Item.Item(Game_Constants.grid_spacing * 4, Game_Constants.grid_spacing * 20.7,"gold_bow")]}
 
     Worlds.current_player = Character.Character(Game_Constants.Window_width / 2 - 16 * Game_Constants.grid_spacing - 16,
                                                 Game_Constants.Window_height / 2 + 18, Game_Constants.player_standard_health)
@@ -1514,11 +1529,20 @@ def raid(current_player: Character, quantity: int, frequency: Union[int, float],
             fim = time.time()
             tempo_decorrido= fim - inicio
 
+            #calcular o dano recebido durante a wave
+            Game_Constants.Dano_em_waves.append(Game_Constants.Dano_levado)
+            Game_Constants.Dano_levado=0
+
+            Game_Constants.Dano_Player_wave.append(Game_Constants.Dano_Player)
+            Game_Constants.Dano_Player=0
+
+            #por o tempo levado em cada wave em uma lista
             if not Game_Constants.tempos_waves_derrotadas:
                 Game_Constants.tempos_waves_derrotadas.append(round(tempo_decorrido,3))
             else:
                 Game_Constants.tempos_waves_derrotadas.append(round(tempo_decorrido,3)- round((len(Game_Constants.tempos_waves_derrotadas)-1)))
             
+            #sistema fuzzy inicial
             if Game_Constants.tempos_waves_derrotadas:
                 somatorio = Game_Constants.tempos_waves_derrotadas
                 media_tempo = sum(somatorio) / len(Game_Constants.tempos_waves_derrotadas)
@@ -1549,3 +1573,19 @@ def raid(current_player: Character, quantity: int, frequency: Union[int, float],
 
     thread = threading.Thread(target=run_raid)
     thread.start()
+
+'''def Fuzzy(tempo:float,dano:int):
+    tempo_fuzzy = np.arange(0,101,0.1)
+    dano_fuzzy = np.arange(0,101,1)
+    dano_player_fuzzy = np.arange(0,201,1)
+    resultado_fuzzy = np.arange(0,11,1)
+
+    tempo = ctrl.Antecedent(tempo_fuzzy, "Tempo")
+    dano = ctrl.Antecedent(dano_fuzzy, "Dano")
+    dano_player = ctrl.Antecedent(dano_player_fuzzy, "DanoPlayer")
+    resultado = ctrl.Consequent(resultado_fuzzy,"Resultado")
+
+    tempo["lento"] = fuzz.zmf(tempo_fuzzy,)'''
+
+
+

@@ -31,6 +31,23 @@ Gold_Bow_Img = MyFunctions.pygame_scale_img(Gold_Bow_Img,
                 (int(Gold_Bow_Img_Width * Game_Constants.Bow_scale * Game_Constants.Custom_bows_constant),
                 int(Gold_Bow_Img_Height * Game_Constants.Bow_scale * Game_Constants.Custom_bows_constant)))
 
+# ataque upgrade
+ataque_img = pygame.image.load("Assets/Items/Upgrades/attack.png")
+ataque_img_Width = ataque_img.get_width()
+ataque_img_Height = ataque_img.get_height()
+ataque_img = MyFunctions.pygame_scale_img(ataque_img,
+                (int(ataque_img_Width * Game_Constants.ataque_scale * Game_Constants.Custom_ataque_constant),
+                int(ataque_img_Height * Game_Constants.ataque_scale * Game_Constants.Custom_ataque_constant)))
+
+# vida upgrade
+vida_img = pygame.image.load("Assets/Items/Upgrades/vida.png")
+vida_img_Width = vida_img.get_width()
+vida_img_Height = vida_img.get_height()
+vida_img = MyFunctions.pygame_scale_img(vida_img,
+                (int(vida_img_Width * Game_Constants.ataque_scale * Game_Constants.Custom_ataque_constant),
+                int(vida_img_Height * Game_Constants.ataque_scale * Game_Constants.Custom_ataque_constant)))
+
+
 # Sword Weapon :
 Sword_Img = pygame.image.load("Assets/Weapon/Sword.png")
 Sword_Img_Width = Sword_Img.get_width()

@@ -18,7 +18,8 @@ class Item(pygame.sprite.Sprite):
     items_dict = dict(red_potion=Items_Images.Red_Potion, coin=Items_Images.Coin,
                       silver_coin=Items_Images.Silver_Coin, red_coin=Items_Images.Red_Coin,
                       emerald=Items_Images.Emerald, static_coin=Items_Images.Static_Coin,
-                      steel_bow=[Weapon_Images.Steel_Bow_Img], gold_bow=[Weapon_Images.Gold_Bow_Img])
+                      steel_bow=[Weapon_Images.Steel_Bow_Img], gold_bow=[Weapon_Images.Gold_Bow_Img],
+                      ataque_upgrade = [Weapon_Images.ataque_img], vida_upgrade= [Weapon_Images.vida_img])
 
     def __init__(self, coordinate_x: Union[int, float], coordinate_y: Union[int, float],
                  item_type: str, can_collect: bool = True):
@@ -103,7 +104,11 @@ class Item(pygame.sprite.Sprite):
                     self.kill()
                     
 
-                
+        left_mouse_click = pygame.mouse.get_pressed()[0]
+        if left_mouse_click and self.item_type=="ataque_upgrade":
+            Game_Constants.ataque_upgrade+=1  
+        if left_mouse_click and self.item_type=="vida_upgrade":
+            Game_Constants.vida_upgrade+=1      
 
         # Handle Animation :
         self.image = self.animation[self.frame_index]
