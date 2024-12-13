@@ -33,6 +33,7 @@ end_game = False
 
 current_player = Character.Character(Game_Constants.Window_width / 2 - 16 * Game_Constants.grid_spacing - 16,
                                      Game_Constants.Window_height / 2 + 18, Game_Constants.player_standard_health)
+current_player.money = Game_Constants.moedas
 
 familiar = Familiar.Familiar(current_player.rect.x, current_player.rect.y, "bat")
 

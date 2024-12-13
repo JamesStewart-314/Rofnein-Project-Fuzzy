@@ -39,10 +39,10 @@ class Character:
         self.new_teleport_position = None
 
         self.moving = (0, 0)
-        self.weapons_inventory = ["Sword", "Bow"]
+        self.weapons_inventory = Game_Constants.player_iventario
 
         self.frame_index = 0
-        self.money = 0
+        self.money = Game_Constants.moedas
         self.update_time = pygame.time.get_ticks()
         self.weapon_change_time = pygame.time.get_ticks()
         self.dash_time = pygame.time.get_ticks()

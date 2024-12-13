@@ -48,15 +48,19 @@ from skfuzzy import control as ctrl
 pygame.init()
 
 interrupt_flag = False  # Flag to stop the recursion from raid function
-
+rodando = True
+clicando = False
+posicao = (0,0)
 full_heart = Heart.Heart("full_heart", 0, 0)
 half_heart = Heart.Heart("half_heart", 0, 0)
 empty_heart = Heart.Heart("empty_heart", 0, 0)
 
 coin_static_image = Item.Item(85, 45, "static_coin", can_collect=False)
 
-coin_loja_1 =Item.Item(Game_Constants.grid_spacing * 1.1, Game_Constants.grid_spacing * 19.6,"coin",can_collect=False)
-coin_loja_2 =Item.Item(Game_Constants.grid_spacing * 4.1, Game_Constants.grid_spacing * 19.6,"coin",can_collect=False)
+coin_loja_1 =Item.Item(Game_Constants.grid_spacing * 35.5, Game_Constants.grid_spacing * 3.5,"coin",can_collect=False)
+coin_loja_2 =Item.Item(Game_Constants.grid_spacing * 37.5, Game_Constants.grid_spacing * 3.5,"coin",can_collect=False)
+coin_loja_3 =Item.Item(Game_Constants.grid_spacing * 30.2, Game_Constants.grid_spacing * 4,"coin",can_collect=False)
+coin_loja_4 =Item.Item(Game_Constants.grid_spacing * 32.6, Game_Constants.grid_spacing * 4,"coin",can_collect=False)
 
 
 
@@ -128,17 +132,27 @@ def draw_info(current_palyer: object, screen: object, damage_text_group,item_gro
     screen.blit(*Teleport_Orb)
     screen.blit(*Ultimate_Orb)
     screen.blit(*Regeneration_Orb)
-    if Game_Constants.level_7:
+    if Game_Constants.level_1:
+        ShowText.draw_text(f"{Game_Constants.ataque_upgrade}/10", "AtariClassic", Game_Constants.RED_COLOR, Game_Constants.grid_spacing * 30, Game_Constants.grid_spacing * 3.5, screen)
+        ShowText.draw_text(f"{Game_Constants.vida_upgrade}/10", "AtariClassic", Game_Constants.GREEN_COLOR, Game_Constants.grid_spacing * 32.4, Game_Constants.grid_spacing * 3.5, screen)
+        ShowText.draw_text(f"{Game_Constants.ataque_preco}", "AtariClassic", Game_Constants.YELLOW_COLOR, Game_Constants.grid_spacing * 30.7, Game_Constants.grid_spacing * 4, screen)
+        ShowText.draw_text(f"{Game_Constants.vida_preco}", "AtariClassic", Game_Constants.YELLOW_COLOR, Game_Constants.grid_spacing * 33.1, Game_Constants.grid_spacing * 4, screen)
+        screen.blit(coin_loja_3.image, coin_loja_3.rect.center)
+        coin_loja_3.update(screen, item_group)
+        screen.blit(coin_loja_4.image, coin_loja_4.rect.center)
+        coin_loja_4.update(screen, item_group)
         if Game_Constants.steel_coletado ==False:
-            ShowText.draw_text(f"20", "AtariClassic", Game_Constants.WHITE_COLOR, Game_Constants.grid_spacing * 1.5, Game_Constants.grid_spacing * 19.6, screen)
+            ShowText.draw_text(f"20", "AtariClassic", Game_Constants.YELLOW_COLOR, Game_Constants.grid_spacing * 36, Game_Constants.grid_spacing * 3.5, screen)
             screen.blit(coin_loja_1.image, coin_loja_1.rect.center)
             coin_loja_1.update(screen, item_group)
             
         if Game_Constants.gold_coletado ==False:
-            ShowText.draw_text(f"30", "AtariClassic", Game_Constants.WHITE_COLOR, Game_Constants.grid_spacing * 4.5, Game_Constants.grid_spacing * 19.6, screen)
+            ShowText.draw_text(f"30", "AtariClassic", Game_Constants.YELLOW_COLOR, Game_Constants.grid_spacing * 38, Game_Constants.grid_spacing * 3.5, screen)
             screen.blit(coin_loja_2.image, coin_loja_2.rect.center)
             coin_loja_2.update(screen, item_group)
 
+   
+        
 
 
 
@@ -179,12 +193,12 @@ def change_level(screen: object, current_world: World, current_player: Character
     enemy_projectiles_group.empty()
     leafs_group.empty()
 
-    # if level in {1, 2}:
-    #     for i in range(Game_Constants.leafs_quantity):
-    #         leaf_image = Background_Images.Tiny_Board_Leaf
-    #         new_leaf = Leaf.Leaf((-30) * i * leaf_image.get_width(), random.randint(0, Game_Constants.Window_height), leaf_image)
-    #         new_leaf.oscilation_position = random.randint(0, 100)
-    #         leafs_group.add(new_leaf)
+    if level in {1, 2}:
+        for i in range(Game_Constants.leafs_quantity):
+             leaf_image = Background_Images.Tiny_Board_Leaf
+             new_leaf = Leaf.Leaf((-30) * i * leaf_image.get_width(), random.randint(0, Game_Constants.Window_height), leaf_image)
+             new_leaf.oscilation_position = random.randint(0, 100)
+             leafs_group.add(new_leaf)
 
     # if level == 2:
     #     Worlds.Level_Spawn_Location[1] = (Game_Constants.grid_spacing * 20, Game_Constants.grid_spacing * 3)
@@ -216,6 +230,7 @@ def change_level(screen: object, current_world: World, current_player: Character
     if level==7:
         Worlds.World_Raids.__getitem__(level)[0][0]()
         Game_Constants.level_7 = True
+        Game_Constants.level_1 = False
 
 
               
@@ -376,7 +391,7 @@ def menu(screen: object, is_fullscreen: bool = False) -> None:
         Game_Title.update()
 
         Sound_Effects.Menu_Music.play_loop()
-
+        
         left_mouse_click = pygame.mouse.get_pressed()[0]
         
         if not pointer_rect.colliderect(Play_Button.rect):
@@ -473,7 +488,7 @@ def menu(screen: object, is_fullscreen: bool = False) -> None:
 def play(screen: object, is_fullscreen: bool = False) -> None:
 
     global interrupt_flag
-
+    
     Screen = screen
 
     Worlds.Start_Fade = True
@@ -546,13 +561,27 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
     item_group.add(red_coin)
     emerald = Item.Item(870, 640, "emerald")
     item_group.add(emerald)"""
+    ataque_up = Item.Item(Game_Constants.grid_spacing * 30.9, Game_Constants.grid_spacing * 2.5,"ataque_upgrade",False)
+    vida_ip = Item.Item(Game_Constants.grid_spacing * 33.4, Game_Constants.grid_spacing * 2.5,"vida_upgrade",False)
+    steel_bow = Item.Item(Game_Constants.grid_spacing * 36, Game_Constants.grid_spacing * 2.5,"steel_bow")
+            
+    gold_bow = Item.Item(Game_Constants.grid_spacing * 38, Game_Constants.grid_spacing * 2.5,"gold_bow")
+
+    item_group.add(ataque_up)
+    item_group.add(vida_ip)
+    item_group.add(steel_bow)
+    item_group.add(gold_bow)
+    
+
+    
 
     Game_LOOP = True  # Setting Game Loop.
     while Game_LOOP:
-
+        #print(Game_Constants.moedas)
+        
         Game_Clock.tick(Game_Constants.FPS)  # Setting FPS to 60.
         Screen.fill(Game_Constants.BLACK_COLOR)
-
+        
         # if not enemy_list and Worlds.current_level == 7 and not Worlds.end_game:
         #     next_level = (None, 1)
         #     Worlds.Current_Fade_Animation = Worlds.Fade_Animation[0]
@@ -958,7 +987,7 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
         # Drawing Enemies :
         for enemy in enemy_list:
             enemy.draw(Screen)
-        print(Worlds.Level_Items)
+        
         # Drawing Weapons :
         weapon.draw(Screen, current_player)
 
@@ -968,9 +997,37 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
         # Drawing Arrows Group :
         for arrow in arrow_group:
             arrow.draw(Screen)
+        for evento in pygame.event.get():
+            
+            
+            # Detectar clique do mouse
+            if evento.type == pygame.MOUSEBUTTONDOWN:
+                posicao = evento.pos
+                for sprite in item_group:
+                    if sprite.rect.collidepoint(posicao) and sprite.item_type == "ataque_upgrade" and current_player.money>=Game_Constants.ataque_preco:      
+                        print(f"Clique detectado em: {sprite.item_type}")
+                        Game_Constants.ataque_upgrade += 3
+                        current_player.money -= Game_Constants.ataque_preco
+                        Game_Constants.ataque_preco +=20
+                        print(f"Ataque upgrade aumentado para: {Game_Constants.ataque_upgrade}")
 
+                    elif sprite.rect.collidepoint(posicao) and sprite.item_type == "vida_upgrade"and current_player.money>=Game_Constants.vida_preco:      
+                        print(f"Clique detectado em: {sprite.item_type}")
+                        Game_Constants.vida_upgrade += 20
+                        current_player.money -= Game_Constants.vida_preco
+                        Game_Constants.vida_preco +=20
+                        print(f"Ataque upgrade aumentado para: {Game_Constants.vida_upgrade}")
+                        
+
+                        
+                        
         # Drawing Items Group :
         item_group.draw(Screen)
+        for sprite in item_group:
+            sprite.desenhar_hitbox(screen)
+            
+            
+        
 
         # Tree's from the current map :
         if Worlds.current_level == 1:
@@ -1105,7 +1162,7 @@ def restart(screen: object) -> None:
 
     Worlds.current_level = 1
     Worlds.raid_index = 0
-
+    
     Worlds.button_3.restart()
     Worlds.button_4.restart()
 
@@ -1269,24 +1326,23 @@ def restart(screen: object) -> None:
                     lambda: raid(Worlds.current_player, 1, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["demon"])], [True, True, True, True,True,True,True,True,True,True,True,True,True])}
 
     Worlds.Level_Items = {
-        1: [Item.Item(Game_Constants.grid_spacing * 5, Game_Constants.grid_spacing * 5, "coin"),
-            Item.Item(Game_Constants.grid_spacing * 5, Game_Constants.grid_spacing * 5, "vida_upgrade"),
-            Item.Item(Game_Constants.grid_spacing * 1, Game_Constants.grid_spacing * 20.7,"steel_bow")],
+        1: [],
         2: [],
         3: [],
-        4: [], 5: [],
+        4: [], 
+        5: [],
         6: [],
-        7: [Item.Item(Game_Constants.grid_spacing * 1.02, Game_Constants.grid_spacing * 20.5,"static_coin",can_collect=False),
-            Item.Item(Game_Constants.grid_spacing * 1, Game_Constants.grid_spacing * 20.7,"steel_bow"),
-            Item.Item(Game_Constants.grid_spacing * 4, Game_Constants.grid_spacing * 20.7,"gold_bow")]}
+        7: []}
 
     Worlds.current_player = Character.Character(Game_Constants.Window_width / 2 - 16 * Game_Constants.grid_spacing - 16,
                                                 Game_Constants.Window_height / 2 + 18, Game_Constants.player_standard_health)
-
+    
     aux_group = pygame.sprite.Group()
-    aux_group.add(Item.Item(Game_Constants.grid_spacing * 37 + 16, Game_Constants.grid_spacing * 17, "emerald"))
+    aux_group.add(Item.Item(Game_Constants.grid_spacing * 37 + 16, Game_Constants.grid_spacing * 17, "steel_bow"))
 
     change_level(screen, World.World(), Worlds.current_player, 1, aux_group, pygame.sprite.Group(), pygame.sprite.Group())
+    Game_Constants.level_7 = False
+    Game_Constants.level_1 = True
 
 
 def death_screen(screen: object, is_fullscreen: bool = False) -> None:
@@ -1573,7 +1629,7 @@ def raid(current_player: Character, quantity: int, frequency: Union[int, float],
 
     thread = threading.Thread(target=run_raid)
     thread.start()
-
+    
 '''def Fuzzy(tempo:float,dano:int):
     tempo_fuzzy = np.arange(0,101,0.1)
     dano_fuzzy = np.arange(0,101,1)
