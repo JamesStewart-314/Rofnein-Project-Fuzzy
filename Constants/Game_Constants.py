@@ -80,7 +80,7 @@ Sword_scale: int = 1
 UI_Icons_Scale: int | float = 1 / 3
 
 ataque_upgrade = 0
-sword_base_damage: int | float = 15000
+sword_base_damage: int | float = 15
 bone_base_damage: int | float = 10
 standard_arrow_damage: int | float = 10
 fireball_base_damage: int | float = 20
@@ -111,7 +111,7 @@ dificuldade_mult = 1
 wave = 0
 
 
-moedas = 3000
+moedas = 30
 player_iventario = ["Sword", "Bow"]
 ataque_preco = 30
 vida_preco=30

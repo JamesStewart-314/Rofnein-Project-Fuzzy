@@ -1609,8 +1609,8 @@ def Fuzzy(tempo_wave: float, vida_player: int):
     print("----------------------------------------------")
     print(f"Wave:{Game_Constants.wave}")
     print(f"resultado final:{SE.output["Resultado"]}")
-    resultado.view(sim=SE)
-    plt.show()
+    '''resultado.view(sim=SE)
+    plt.show()'''
     print(f"tempo na wave:{tempo_wave}")
     print(f"vida perdida:{vida_player}")
 
