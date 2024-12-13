@@ -27,14 +27,14 @@ class Monster:
     # Dictionary of monsters with their respective images and health :
     # Monster = [ < Idle Animation >, < Running Animation >, < Monster Health >, < Monster Damage >, < Monster Speed >, < Shoot Cooldown (ms) > ]
     monster_dict = dict(
-        imp=[Assets.Monster_Images.Imp_Idle_Animation, Assets.Monster_Images.Imp_Run_Animation, 100, 10*Game_Constants.dano_fuzzy, 1, 0],
-        skeleton=[Assets.Monster_Images.Skeleton_Idle_Animation, Assets.Monster_Images.Skeleton_Run_Animation, 75, 10*Game_Constants.dano_fuzzy,
+        imp=[Assets.Monster_Images.Imp_Idle_Animation, Assets.Monster_Images.Imp_Run_Animation, 100*Game_Constants.dificuldade_mult , 10*Game_Constants.dificuldade_mult, 1, 0],
+        skeleton=[Assets.Monster_Images.Skeleton_Idle_Animation, Assets.Monster_Images.Skeleton_Run_Animation, 75*Game_Constants.dificuldade_mult, 10*Game_Constants.dificuldade_mult,
                   1.7, 2000],
-        goblin=[Assets.Monster_Images.Goblin_Idle_Animation, Assets.Monster_Images.Goblin_Run_Animation, 200, 10*Game_Constants.dano_fuzzy, 3, 0],
-        muddy=[Assets.Monster_Images.Muddy_Idle_Animation, Assets.Monster_Images.Muddy_Run_Animation, 300, 20*Game_Constants.dano_fuzzy, 2, 0],
-        zombie=[Assets.Monster_Images.Zombie_Idle_Animation, Assets.Monster_Images.Zombie_Run_Animation, 125, 10*Game_Constants.dano_fuzzy, 1.5,
+        goblin=[Assets.Monster_Images.Goblin_Idle_Animation, Assets.Monster_Images.Goblin_Run_Animation, 200*Game_Constants.dificuldade_mult, 10*Game_Constants.dificuldade_mult, 3, 0],
+        muddy=[Assets.Monster_Images.Muddy_Idle_Animation, Assets.Monster_Images.Muddy_Run_Animation, 300*Game_Constants.dificuldade_mult, 20*Game_Constants.dificuldade_mult, 2, 0],
+        zombie=[Assets.Monster_Images.Zombie_Idle_Animation, Assets.Monster_Images.Zombie_Run_Animation, 125*Game_Constants.dificuldade_mult, 10*Game_Constants.dificuldade_mult, 1.5,
                 0],
-        demon=[Assets.Monster_Images.Demon_Idle_Animation, Assets.Monster_Images.Demon_Run_Animation, 3_000, 20, 2,
+        demon=[Assets.Monster_Images.Demon_Idle_Animation, Assets.Monster_Images.Demon_Run_Animation, 3_000*Game_Constants.dificuldade_mult, 20*Game_Constants.dificuldade_mult, 2,
                3_000])
 
     def __init__(self, coordinate_x: Union[int, float], coordinate_y: Union[int, float], current_monster: str):
@@ -140,7 +140,7 @@ class Monster:
                                                int(Game_Constants.sword_base_damage * 3 / 10))
                 damage_position = self.rect
                 self.health -= return_damage
-                Game_Constants.Dano_Player += return_damage
+                
                 self.hit = True
                 Sound_Effects.Sword_Slice.play()
 
@@ -155,7 +155,7 @@ class Monster:
                                                    int(Game_Constants.sword_base_damage * 3 / 10))
                     damage_position = self.rect
                     self.health -= return_damage
-                    Game_Constants.Dano_Player += return_damage
+                    
                     self.hit = True
                     Sound_Effects.Sword_Slice.play()
 
@@ -211,6 +211,7 @@ class Monster:
                     if dy < 0:
                         self.rect.top = obstacle[1].bottom
 
+
     def ai(self, current_player: Character, current_obstacles: list, enemy_projectiles_group: object) -> None:
         if self.can_act:
             clipped_line: tuple = ()
@@ -255,6 +256,7 @@ class Monster:
                 if distance < Game_Constants.attack_range and not current_player.hit:
                     if current_player.take_damage:
                         current_player.health -= self.damage
+                        Game_Constants.vida_perdida += self.damage
                         
                         random.choice(Sound_Effects.Damage_Sound_Effect).play()
                         current_player.hit = True

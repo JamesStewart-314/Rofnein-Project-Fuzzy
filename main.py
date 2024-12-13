@@ -9,6 +9,7 @@ from Assets import Worlds
 from Constants import Game_Constants
 from MyFunctions import MyFunctions_2
 
+
 pygame.init()  # Initializing Pygame.
 
 is_fullscreen: bool = False
