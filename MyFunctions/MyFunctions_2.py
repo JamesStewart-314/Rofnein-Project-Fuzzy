@@ -75,7 +75,7 @@ def draw_info(current_palyer: object, screen: object, damage_text_group,item_gro
     total_life = Game_Constants.player_standard_health
 
     heart_counter = total_life / hearts_number
-
+    
     half_heart_draw = False
 
     character_icon = Assets.Player_Images.Health_bar
@@ -141,12 +141,12 @@ def draw_info(current_palyer: object, screen: object, damage_text_group,item_gro
         coin_loja_3.update(screen, item_group)
         screen.blit(coin_loja_4.image, coin_loja_4.rect.center)
         coin_loja_4.update(screen, item_group)
-        if Game_Constants.steel_coletado ==False:
+        if Game_Constants.steel_coletado == False:
             ShowText.draw_text(f"20", "AtariClassic", Game_Constants.YELLOW_COLOR, Game_Constants.grid_spacing * 36, Game_Constants.grid_spacing * 3.5, screen)
             screen.blit(coin_loja_1.image, coin_loja_1.rect.center)
             coin_loja_1.update(screen, item_group)
             
-        if Game_Constants.gold_coletado ==False:
+        if Game_Constants.gold_coletado == False:
             ShowText.draw_text(f"30", "AtariClassic", Game_Constants.YELLOW_COLOR, Game_Constants.grid_spacing * 38, Game_Constants.grid_spacing * 3.5, screen)
             screen.blit(coin_loja_2.image, coin_loja_2.rect.center)
             coin_loja_2.update(screen, item_group)
@@ -173,9 +173,12 @@ def draw_grid(screen: object) -> None:
 
 
 def change_level(screen: object, current_world: World, current_player: Character,
-                 level: int, item_group: object, enemy_projectiles_group: object, leafs_group: object) -> list:
+                 level: int, item_group: object, enemy_projectiles_group: object, leafs_group: object, upgrade_group = None) -> list:
 
     screen.fill(Game_Constants.BLACK_COLOR)  # Reset the background
+
+    if upgrade_group is not None:
+        upgrade_group.empty()
 
     Sound_Effects.Grass_Walking_Sound.stop()
     Sound_Effects.Walking_Sound.stop()
@@ -187,6 +190,7 @@ def change_level(screen: object, current_world: World, current_player: Character
     
 
     item_group.empty()
+    
 
     Worlds.Level_Title.__getitem__(Worlds.current_level).restart()
 
@@ -535,6 +539,9 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
     # Creating Items Group :
     item_group = pygame.sprite.Group()
 
+    # Upgrades Group :
+    upgrade_group = pygame.sprite.Group()
+
     # Creating Enemies Projectiles Group :
     enemy_projectiles_group = pygame.sprite.Group()
 
@@ -567,17 +574,14 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
             
     gold_bow = Item.Item(Game_Constants.grid_spacing * 38, Game_Constants.grid_spacing * 2.5,"gold_bow")
 
-    item_group.add(ataque_up)
-    item_group.add(vida_ip)
-    item_group.add(steel_bow)
-    item_group.add(gold_bow)
-    
-
-    
+    upgrade_group.add(ataque_up)
+    upgrade_group.add(vida_ip)
+    upgrade_group.add(steel_bow)
+    upgrade_group.add(gold_bow)    
 
     Game_LOOP = True  # Setting Game Loop.
     while Game_LOOP:
-        #print(Game_Constants.moedas)
+        # print(Game_Constants.player_standard_health)
         
         Game_Clock.tick(Game_Constants.FPS)  # Setting FPS to 60.
         Screen.fill(Game_Constants.BLACK_COLOR)
@@ -709,19 +713,43 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
 
             # Checking for Player's interactions :
             for Event in pygame.event.get():
-
                 if Event.type == pygame.QUIT:  # Event for closing the game window.
                     Game_LOOP = False
                     interrupt_flag = True
 
                 right_mouse_pressed = pygame.mouse.get_pressed()[2]
+                
 
+                if Event.type == pygame.MOUSEBUTTONDOWN:
+                    posicao = Event.pos
+                    for sprite in upgrade_group:
+                        if sprite.rect.collidepoint(posicao) and sprite.item_type == "ataque_upgrade" and current_player.money>=Game_Constants.ataque_preco:      
+                            # print(f"Clique detectado em: {sprite.item_type}")
+                            Game_Constants.sword_base_damage += 3
+                            Game_Constants.standard_arrow_damage += 3
+                            Game_Constants.spirit_arrow_damage += 5
+                            Game_Constants.phantom_arrow_damage += 7
+
+                            Game_Constants.ataque_upgrade +=1
+                            current_player.money -= Game_Constants.ataque_preco
+                            Game_Constants.ataque_preco +=20
+                            
+                            # print(f"Ataque upgrade aumentado para: {Game_Constants.ataque_upgrade}")
+
+                        elif sprite.rect.collidepoint(posicao) and sprite.item_type == "vida_upgrade"and current_player.money>=Game_Constants.vida_preco:      
+                            # print(f"Clique detectado em: {sprite.item_type}")
+                            Game_Constants.player_standard_health += 20
+                            Game_Constants.hearts_quantity += 1
+                            Game_Constants.vida_upgrade +=1
+                            current_player.money -= Game_Constants.vida_preco
+                            Game_Constants.vida_preco +=20
+                            current_player.health = Game_Constants.player_standard_health
+                            
+                
                 if right_mouse_pressed:  # Interaction between objects in map :
                     for interaction in Worlds.Level_Interactions.__getitem__(Worlds.current_level):
-
                         # if interaction has not occured yet :
                         if not interaction[3]:
-
                             if current_player.hitbox.colliderect(interaction[2]) and current_player.can_interact:
                                 interaction[4](interaction)
 
@@ -961,6 +989,8 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
             # Updating All Items :
             item_group.update(current_player, text_group)
 
+            upgrade_group.update(current_player, text_group)
+
             # Updating All Enemy Projectiles :
             for projectile in enemy_projectiles_group:
                 projectile.update(current_player, current_objects)
@@ -996,39 +1026,17 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
 
         # Drawing Arrows Group :
         for arrow in arrow_group:
-            arrow.draw(Screen)
-        for evento in pygame.event.get():
-            
-            
-            # Detectar clique do mouse
-            if evento.type == pygame.MOUSEBUTTONDOWN:
-                posicao = evento.pos
-                for sprite in item_group:
-                    if sprite.rect.collidepoint(posicao) and sprite.item_type == "ataque_upgrade" and current_player.money>=Game_Constants.ataque_preco:      
-                        print(f"Clique detectado em: {sprite.item_type}")
-                        Game_Constants.ataque_upgrade += 3
-                        current_player.money -= Game_Constants.ataque_preco
-                        Game_Constants.ataque_preco +=20
-                        print(f"Ataque upgrade aumentado para: {Game_Constants.ataque_upgrade}")
-
-                    elif sprite.rect.collidepoint(posicao) and sprite.item_type == "vida_upgrade"and current_player.money>=Game_Constants.vida_preco:      
-                        print(f"Clique detectado em: {sprite.item_type}")
-                        Game_Constants.vida_upgrade += 20
-                        current_player.money -= Game_Constants.vida_preco
-                        Game_Constants.vida_preco +=20
-                        print(f"Ataque upgrade aumentado para: {Game_Constants.vida_upgrade}")
-                        
-
-                        
+            arrow.draw(Screen) 
                         
         # Drawing Items Group :
         item_group.draw(Screen)
         for sprite in item_group:
             sprite.desenhar_hitbox(screen)
-            
-            
-        
 
+        upgrade_group.draw(Screen)
+        for sprite in upgrade_group:
+            sprite.desenhar_hitbox(screen)
+            
         # Tree's from the current map :
         if Worlds.current_level == 1:
             for tree in Worlds.First_World_Trees:
@@ -1123,7 +1131,7 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
                     Worlds.Current_Fade_Animation = Worlds.Fade_Animation[1]
 
                     enemy_list = change_level(Screen, current_world, current_player,
-                                              next_level[1], item_group, enemy_projectiles_group, leafs_group)
+                                              next_level[1], item_group, enemy_projectiles_group, leafs_group, upgrade_group)
 
                     for enemy in enemy_list:
                         enemy.can_move = False

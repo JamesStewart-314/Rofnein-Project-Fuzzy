@@ -31,8 +31,8 @@ Arrow_standard_speed: int | float = 8
 spirit_arrow_change_velocity: int | float = 50
 
 vida_upgrade = 0
-player_standard_health: int | float = 100 + vida_upgrade
-hearts_quantity: int = 5 + int((vida_upgrade/20))
+player_standard_health: int | float = 100 
+hearts_quantity: int = 5 
 potion_heal: int | float = player_standard_health / hearts_quantity
 
 drop_rate: int = 2  # 1 = 50% -> (0, 1)   |||   2 = -> 33,3% -> (0, 0, 1) etc...
@@ -80,7 +80,7 @@ Sword_scale: int = 1
 UI_Icons_Scale: int | float = 1 / 3
 
 ataque_upgrade = 0
-sword_base_damage: int | float = 15 + ataque_upgrade
+sword_base_damage: int | float = 15 
 bone_base_damage: int | float = 10
 standard_arrow_damage: int | float = 10
 fireball_base_damage: int | float = 20

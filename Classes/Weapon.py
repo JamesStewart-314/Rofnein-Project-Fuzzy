@@ -28,7 +28,7 @@ class Weapon:
         self.fired = False
 
         self.angle = 0  # Initial angle.
-        self.inverted = inverted  # Useed to create the inverted sword (ultimate)
+        self.inverted = inverted  # Used to create the inverted sword (ultimate)
 
         self.current_weapon = current_weapon
         # Gets the weapon from Weapons inventory dictionary :
