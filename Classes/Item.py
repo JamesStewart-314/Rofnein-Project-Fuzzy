@@ -86,7 +86,7 @@ class Item(pygame.sprite.Sprite):
                     if current_player.health > 100:
                         current_player.health = 100
 
-                elif self.item_type == "steel_bow" and current_player.money>=20:
+                elif self.item_type == "steel_bow" and current_player.money>=200:
                     current_player.weapons_inventory.append("Steel_bow")
                     Game_Constants.player_iventario.append("Steel_bow")
                     current_player.money-= 20
@@ -96,7 +96,7 @@ class Item(pygame.sprite.Sprite):
                     text_group.add(ShowText.ShowText(self.rect.centerx + 28, self.rect.centery, "Steel Bow Acquired",
                                                      Game_Constants.SILVER_COLOR, "Micro", kill_time=1100, speed=0.6))
 
-                elif self.item_type == "gold_bow" and current_player.money>=30:
+                elif self.item_type == "gold_bow" and current_player.money>=300:
                     current_player.weapons_inventory.append("Gold_bow")
                     Game_Constants.player_iventario.append("Gold_bow")
                     current_player.money-= 30

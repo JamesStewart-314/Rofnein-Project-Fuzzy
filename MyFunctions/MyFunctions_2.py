@@ -39,11 +39,18 @@ from Classes import Monster
 from Classes import ShowText
 from Classes import Weapon
 from Classes import World
+from Classes import MySound
 from Assets import Player_Images
 
 import numpy as np
 import skfuzzy as fuzz
 from skfuzzy import control as ctrl
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+import numpy as np
+
+
+
 
 pygame.init()
 
@@ -61,6 +68,10 @@ coin_loja_1 =Item.Item(Game_Constants.grid_spacing * 35.5, Game_Constants.grid_s
 coin_loja_2 =Item.Item(Game_Constants.grid_spacing * 37.5, Game_Constants.grid_spacing * 3.5,"coin",can_collect=False)
 coin_loja_3 =Item.Item(Game_Constants.grid_spacing * 30.2, Game_Constants.grid_spacing * 4,"coin",can_collect=False)
 coin_loja_4 =Item.Item(Game_Constants.grid_spacing * 32.6, Game_Constants.grid_spacing * 4,"coin",can_collect=False)
+music_inicio= MySound.MySound("first_level_stand_music", 0.5)
+music_dungeon_comeco= MySound.MySound("dungeon_stand_music", 0.5)
+music_dungen_final = MySound.MySound("dungeon_combat_music", 0.3)
+music_boss= MySound.MySound("boss_fight_music", 0.3)
 
 
 
@@ -142,12 +153,12 @@ def draw_info(current_palyer: object, screen: object, damage_text_group,item_gro
         screen.blit(coin_loja_4.image, coin_loja_4.rect.center)
         coin_loja_4.update(screen, item_group)
         if Game_Constants.steel_coletado == False:
-            ShowText.draw_text(f"20", "AtariClassic", Game_Constants.YELLOW_COLOR, Game_Constants.grid_spacing * 36, Game_Constants.grid_spacing * 3.5, screen)
+            ShowText.draw_text(f"200", "AtariClassic", Game_Constants.YELLOW_COLOR, Game_Constants.grid_spacing * 36, Game_Constants.grid_spacing * 3.5, screen)
             screen.blit(coin_loja_1.image, coin_loja_1.rect.center)
             coin_loja_1.update(screen, item_group)
             
         if Game_Constants.gold_coletado == False:
-            ShowText.draw_text(f"30", "AtariClassic", Game_Constants.YELLOW_COLOR, Game_Constants.grid_spacing * 38, Game_Constants.grid_spacing * 3.5, screen)
+            ShowText.draw_text(f"300", "AtariClassic", Game_Constants.YELLOW_COLOR, Game_Constants.grid_spacing * 38, Game_Constants.grid_spacing * 3.5, screen)
             screen.blit(coin_loja_2.image, coin_loja_2.rect.center)
             coin_loja_2.update(screen, item_group)
 
@@ -185,13 +196,8 @@ def change_level(screen: object, current_world: World, current_player: Character
     Sound_Effects.Echo_Walking_Sound.stop()
 
     # Saving the items from current level :
-    Worlds.Level_Items.__getitem__(Worlds.current_level).clear()  # To not duplicate the items
-
-    
-
+    Worlds.Level_Items.__getitem__(Worlds.current_level).clear()  # To not duplicate the item
     item_group.empty()
-    
-
     Worlds.Level_Title.__getitem__(Worlds.current_level).restart()
 
     enemy_projectiles_group.empty()
@@ -570,18 +576,21 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
     item_group.add(emerald)"""
     ataque_up = Item.Item(Game_Constants.grid_spacing * 30.9, Game_Constants.grid_spacing * 2.5,"ataque_upgrade",False)
     vida_ip = Item.Item(Game_Constants.grid_spacing * 33.4, Game_Constants.grid_spacing * 2.5,"vida_upgrade",False)
-    steel_bow = Item.Item(Game_Constants.grid_spacing * 36, Game_Constants.grid_spacing * 2.5,"steel_bow")
-            
-    gold_bow = Item.Item(Game_Constants.grid_spacing * 38, Game_Constants.grid_spacing * 2.5,"gold_bow")
+    if not Game_Constants.steel_coletado:
+        steel_bow = Item.Item(Game_Constants.grid_spacing * 36, Game_Constants.grid_spacing * 2.5,"steel_bow")
+        upgrade_group.add(steel_bow)
+    if not Game_Constants.gold_coletado:
+        gold_bow = Item.Item(Game_Constants.grid_spacing * 38, Game_Constants.grid_spacing * 2.5,"gold_bow")
+        upgrade_group.add(gold_bow)
 
     upgrade_group.add(ataque_up)
     upgrade_group.add(vida_ip)
-    upgrade_group.add(steel_bow)
-    upgrade_group.add(gold_bow)    
+    
+        
 
     Game_LOOP = True  # Setting Game Loop.
     while Game_LOOP:
-        # print(Game_Constants.player_standard_health)
+        
         
         Game_Clock.tick(Game_Constants.FPS)  # Setting FPS to 60.
         Screen.fill(Game_Constants.BLACK_COLOR)
@@ -609,14 +618,6 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
                 Sound_Effects.Dungeon_Air.play_loop()
 
             if Worlds.current_level == 1:
-
-                for music in Sound_Effects.Second_Level_Music:
-                    music.stop()
-                for music in Sound_Effects.Dungeon_Music:
-                    music.stop()
-                for music in Sound_Effects.Boss_Fight_Music:
-                    music.stop()
-
                 if not enemy_list:
                     Sound_Effects.First_Level_Music[1].stop()
                     Sound_Effects.First_Level_Music[0].play_loop()
@@ -624,86 +625,36 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
                     Sound_Effects.First_Level_Music[0].stop()
                     Sound_Effects.First_Level_Music[1].play_loop()
 
-            elif Worlds.current_level == 2:
 
-                for music in Sound_Effects.First_Level_Music:
-                    music.stop()
-                for music in Sound_Effects.Dungeon_Music:
-                    music.stop()
-                for music in Sound_Effects.Boss_Fight_Music:
-                    music.stop()
+            if Game_Constants.level_1:
+                Sound_Effects.Wind_Sound.play()
+                music_dungeon_comeco.stop()
+                music_dungen_final.stop()
+                music_boss.stop()
 
-                # if not enemy_list:
-                #     Sound_Effects.Second_Level_Music[1].stop()
-                #     Sound_Effects.Second_Level_Music[0].play_loop()
-                # else:
-                #     Sound_Effects.Second_Level_Music[0].stop()
-                #     Sound_Effects.Second_Level_Music[1].play_loop()
-
-            elif Worlds.current_level == 3:
-
-                for music in Sound_Effects.Second_Level_Music:
-                    music.stop()
-                for music in Sound_Effects.First_Level_Music:
-                    music.stop()
-                for music in Sound_Effects.Boss_Fight_Music:
-                    music.stop()
-
-                # Sound_Effects.Dungeon_Music[1].stop()
-                # Sound_Effects.Dungeon_Music[0].play_loop()
-
-            elif Worlds.current_level in {4, 5}:
-
-                for music in Sound_Effects.Second_Level_Music:
-                    music.stop()
-                for music in Sound_Effects.First_Level_Music:
-                    music.stop()
-                for music in Sound_Effects.Boss_Fight_Music:
-                    music.stop()
-
-                # if not (functools.reduce(lambda aux_1, aux_2: aux_1 or aux_2,
-                #                          Worlds.World_Raids.__getitem__(Worlds.current_level)[1])):
-
-                #     Sound_Effects.Dungeon_Music[1].stop()
-                #     Sound_Effects.Dungeon_Music[0].play_loop()
-                # else:
-                #     Sound_Effects.Dungeon_Music[0].stop()
-                #     Sound_Effects.Dungeon_Music[1].play_loop()
-
-            elif Worlds.current_level == 6:
-
-                for music in Sound_Effects.Second_Level_Music:
-                    music.stop()
-                for music in Sound_Effects.First_Level_Music:
-                    music.stop()
-                for music in Sound_Effects.Boss_Fight_Music:
-                    music.stop()
-
-                # if (functools.reduce(lambda aux_1, aux_2: aux_1 or aux_2,
-                #                      Worlds.World_Raids.__getitem__(Worlds.current_level)[1])) and \
-                #         "Gold_bow" in current_player.weapons_inventory:
-
-                #     Sound_Effects.Dungeon_Music[0].stop()
-                #     Sound_Effects.Dungeon_Music[1].play_loop()
-                # else:
-                #     Sound_Effects.Dungeon_Music[1].stop()
-                #     Sound_Effects.Dungeon_Music[0].play_loop()
-
-            elif Worlds.current_level == 7:
-
-                for music in Sound_Effects.Second_Level_Music:
-                    music.stop()
-                for music in Sound_Effects.First_Level_Music:
-                    music.stop()
-                for music in Sound_Effects.Dungeon_Music:
-                    music.stop()
+               
+                music_inicio.play()
+            '''if Game_Constants.level_7:
+                music_inicio.stop()
+                if Game_Constants.wave<8:
+                    music_dungeon_comeco.play()
+                elif Game_Constants.wave>=8 and Game_Constants.wave<=11:
+                    music_dungeon_comeco.stop()
+                    music_dungen_final.play()
+                if Game_Constants.wave>11:
+                    music_dungen_final.stop()
+                    music_boss.play()
 
                 if enemy_list:
                     Sound_Effects.Boss_Fight_Music[1].stop()
                     Sound_Effects.Boss_Fight_Music[0].play_loop()
                 else:
                     Sound_Effects.Boss_Fight_Music[0].stop()
-                    Sound_Effects.Boss_Fight_Music[1].play_loop()
+                    Sound_Effects.Boss_Fight_Music[1].play_loop()'''
+
+            
+
+            
 
             # Defining initial speed :
             dx = 0
@@ -723,7 +674,7 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
                 if Event.type == pygame.MOUSEBUTTONDOWN:
                     posicao = Event.pos
                     for sprite in upgrade_group:
-                        if sprite.rect.collidepoint(posicao) and sprite.item_type == "ataque_upgrade" and current_player.money>=Game_Constants.ataque_preco:      
+                        if sprite.rect.collidepoint(posicao) and sprite.item_type == "ataque_upgrade" and current_player.money>=Game_Constants.ataque_preco and Game_Constants.ataque_upgrade<=9:      
                             # print(f"Clique detectado em: {sprite.item_type}")
                             Game_Constants.sword_base_damage += 3
                             Game_Constants.standard_arrow_damage += 3
@@ -736,7 +687,7 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
                             
                             # print(f"Ataque upgrade aumentado para: {Game_Constants.ataque_upgrade}")
 
-                        elif sprite.rect.collidepoint(posicao) and sprite.item_type == "vida_upgrade"and current_player.money>=Game_Constants.vida_preco:      
+                        elif sprite.rect.collidepoint(posicao) and sprite.item_type == "vida_upgrade"and current_player.money>=Game_Constants.vida_preco and Game_Constants.vida_upgrade<=9:      
                             # print(f"Clique detectado em: {sprite.item_type}")
                             Game_Constants.player_standard_health += 20
                             Game_Constants.hearts_quantity += 1
@@ -1030,12 +981,10 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
                         
         # Drawing Items Group :
         item_group.draw(Screen)
-        for sprite in item_group:
-            sprite.desenhar_hitbox(screen)
+        
 
         upgrade_group.draw(Screen)
-        for sprite in upgrade_group:
-            sprite.desenhar_hitbox(screen)
+        
             
         # Tree's from the current map :
         if Worlds.current_level == 1:
@@ -1594,33 +1543,14 @@ def raid(current_player: Character, quantity: int, frequency: Union[int, float],
             tempo_decorrido= fim - inicio
 
             #calcular o dano recebido durante a wave
-            Game_Constants.Dano_em_waves.append(Game_Constants.Dano_levado)
-            Game_Constants.Dano_levado=0
-
-            Game_Constants.Dano_Player_wave.append(Game_Constants.Dano_Player)
-            Game_Constants.Dano_Player=0
-
-            #por o tempo levado em cada wave em uma lista
-            if not Game_Constants.tempos_waves_derrotadas:
-                Game_Constants.tempos_waves_derrotadas.append(round(tempo_decorrido,3))
-            else:
-                Game_Constants.tempos_waves_derrotadas.append(round(tempo_decorrido,3)- round((len(Game_Constants.tempos_waves_derrotadas)-1)))
             
-            #sistema fuzzy inicial
-            if Game_Constants.tempos_waves_derrotadas:
-                somatorio = Game_Constants.tempos_waves_derrotadas
-                media_tempo = sum(somatorio) / len(Game_Constants.tempos_waves_derrotadas)
-                
-                if media_tempo<4.5:
-                    Game_Constants.dano_fuzzy=2
-                elif media_tempo>=4.5 and media_tempo<5.5:
-                    Game_Constants.dano_fuzzy=1.75
-                elif media_tempo>= 5.5 and media_tempo<6.5:
-                    Game_Constants.dano_fuzzy=1.25
-                elif media_tempo>=6.5 and media_tempo<7.5:
-                    Game_Constants.dano_fuzzy=1
-                elif media_tempo>= 7.5:
-                    Game_Constants.dano_fuzzy=0.75
+            #por o tempo levado em cada wave em uma lista
+            Game_Constants.tempos_waves_derrotadas = tempo_decorrido
+            
+            
+            # TODO: RESETAR O DANO TOTAL CAUSADO PELA WAVE
+
+            
             # If player has defeated the Raid :
             Worlds.World_Raids.__getitem__(Worlds.current_level)[1][Worlds.raid_index] = False
 
@@ -1629,7 +1559,9 @@ def raid(current_player: Character, quantity: int, frequency: Union[int, float],
             # Calling the next raid :
             try:
                 Worlds.World_Raids.__getitem__(Worlds.current_level)[0][Worlds.raid_index]()
-                
+                Fuzzy(Game_Constants.tempos_waves_derrotadas,Game_Constants.vida_perdida)
+                Game_Constants.vida_perdida = 0
+                Game_Constants.wave +=1
 
             except IndexError:
                 Worlds.raid_index = 0
@@ -1638,18 +1570,61 @@ def raid(current_player: Character, quantity: int, frequency: Union[int, float],
     thread = threading.Thread(target=run_raid)
     thread.start()
     
-'''def Fuzzy(tempo:float,dano:int):
+def Fuzzy(tempo_wave: float, vida_player: int):
     tempo_fuzzy = np.arange(0,101,0.1)
-    dano_fuzzy = np.arange(0,101,1)
-    dano_player_fuzzy = np.arange(0,201,1)
-    resultado_fuzzy = np.arange(0,11,1)
+    vida_fuzzy = np.arange(0,301,1)
+    resultado_fuzzy = np.arange(0,13,1)
 
     tempo = ctrl.Antecedent(tempo_fuzzy, "Tempo")
-    dano = ctrl.Antecedent(dano_fuzzy, "Dano")
-    dano_player = ctrl.Antecedent(dano_player_fuzzy, "DanoPlayer")
-    resultado = ctrl.Consequent(resultado_fuzzy,"Resultado")
+    vida = ctrl.Antecedent(vida_fuzzy, "Vida")
+    resultado = ctrl.Consequent(resultado_fuzzy, "Resultado")
 
-    tempo["lento"] = fuzz.zmf(tempo_fuzzy,)'''
+    tempo["rapido"] = fuzz.zmf(tempo_fuzzy,5,10)
+    tempo["normal"] = fuzz.trapmf(tempo_fuzzy,[8,14,20,25])
+    tempo["lento"] = fuzz.smf(tempo_fuzzy,20,30)
+
+    vida["baixo"] = fuzz.zmf(vida_fuzzy,0,20)
+    vida["medio"] = fuzz.trapmf(vida_fuzzy,[15,25,35,45])
+    vida["alto"] = fuzz.smf(vida_fuzzy,40,55)
+
+    resultado["facil"] = fuzz.zmf(resultado_fuzzy,0,3)
+    resultado["medio"] = fuzz.trapmf(resultado_fuzzy,[3,5,6,7])
+    resultado["dificil"] =fuzz.smf(resultado_fuzzy,7,12)
+
+    rule1 = ctrl.Rule(tempo['rapido'] & vida["baixo"],resultado["dificil"]) 
+    rule2 = ctrl.Rule(tempo['rapido'] & vida['medio'], resultado["dificil"])
+    rule3 = ctrl.Rule(tempo['rapido'] & vida['alto'],resultado["medio"] )
+    rule4 = ctrl.Rule(tempo['normal'] & vida["baixo"], resultado["dificil"])
+    rule5 = ctrl.Rule(tempo['normal'] & vida['medio'],resultado["medio"])
+    rule6 = ctrl.Rule(tempo['normal'] & vida['alto'],resultado["facil"])
+    rule7 = ctrl.Rule(tempo['lento'] & vida["baixo"],resultado["medio"])
+    rule8 = ctrl.Rule(tempo['lento'] & vida['medio'],resultado["facil"])
+    rule9 = ctrl.Rule(tempo['lento'] & vida['alto'], resultado["facil"])
+
+    SE_ctrl = ctrl.ControlSystem([rule1,rule2,rule3,rule4,rule5,rule6,rule7,rule8,rule9])
+    SE = ctrl.ControlSystemSimulation(SE_ctrl)
+    SE.input["Tempo"] = tempo_wave
+    SE.input["Vida"] = vida_player
+    SE.compute()
+    print("----------------------------------------------")
+    print(f"Wave:{Game_Constants.wave}")
+    print(f"resultado final:{SE.output["Resultado"]}")
+    '''resultado.view(sim=SE)
+    plt.show()'''
+    print(f"tempo na wave:{tempo_wave}")
+    print(f"vida perdida:{vida_player}")
+
+    resultado_valor = SE.output["Resultado"]
+
+    if resultado_valor <= 3:
+        Game_Constants.dificuldade_mult =0.5
+    elif 3 < resultado_valor <= 6:
+        Game_Constants.dificuldade_mult = 1
+    else:
+        Game_Constants.dificuldade_mult =2
+    print(f"dificuldade do jogo:{Game_Constants.dificuldade_mult}")
+    print("----------------------------------------------")
+    print("")
 
 
 

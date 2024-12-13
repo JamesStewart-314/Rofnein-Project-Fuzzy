@@ -80,7 +80,7 @@ Sword_scale: int = 1
 UI_Icons_Scale: int | float = 1 / 3
 
 ataque_upgrade = 0
-sword_base_damage: int | float = 15 
+sword_base_damage: int | float = 15
 bone_base_damage: int | float = 10
 standard_arrow_damage: int | float = 10
 fireball_base_damage: int | float = 20
@@ -98,16 +98,17 @@ level_text_time: int | float = 3000
 
 leafs_quantity: int = 3
 
-tempos_waves_derrotadas = []
+tempos_waves_derrotadas = 0
+vida_perdida = 0
 dano_fuzzy = 1
 level_7 =False
 level_1=True
 steel_coletado =False
 gold_coletado = False
 Dano_levado = 0
-Dano_em_waves = []
-Dano_Player = 0
-Dano_Player_wave = []
+resultado = []
+dificuldade_mult = 1
+wave = 0
 
 
 moedas = 30
