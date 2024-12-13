@@ -140,6 +140,7 @@ class Monster:
                                                int(Game_Constants.sword_base_damage * 3 / 10))
                 damage_position = self.rect
                 self.health -= return_damage
+                Game_Constants.Dano_Player += return_damage
                 self.hit = True
                 Sound_Effects.Sword_Slice.play()
 
@@ -154,6 +155,7 @@ class Monster:
                                                    int(Game_Constants.sword_base_damage * 3 / 10))
                     damage_position = self.rect
                     self.health -= return_damage
+                    Game_Constants.Dano_Player += return_damage
                     self.hit = True
                     Sound_Effects.Sword_Slice.play()
 
@@ -253,9 +255,11 @@ class Monster:
                 if distance < Game_Constants.attack_range and not current_player.hit:
                     if current_player.take_damage:
                         current_player.health -= self.damage
+                        
                         random.choice(Sound_Effects.Damage_Sound_Effect).play()
                         current_player.hit = True
                         current_player.last_hit = pygame.time.get_ticks()
+                        Game_Constants.Dano_levado += self.damage
 
                 if self.current_monster == "skeleton":
                     if pygame.time.get_ticks() - self.last_shot > self.shoot_cooldown + \

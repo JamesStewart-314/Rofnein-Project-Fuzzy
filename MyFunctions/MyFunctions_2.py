@@ -41,18 +41,26 @@ from Classes import Weapon
 from Classes import World
 from Assets import Player_Images
 
+import numpy as np
+import skfuzzy as fuzz
+from skfuzzy import control as ctrl
+
 pygame.init()
 
 interrupt_flag = False  # Flag to stop the recursion from raid function
-
+rodando = True
+clicando = False
+posicao = (0,0)
 full_heart = Heart.Heart("full_heart", 0, 0)
 half_heart = Heart.Heart("half_heart", 0, 0)
 empty_heart = Heart.Heart("empty_heart", 0, 0)
 
 coin_static_image = Item.Item(85, 45, "static_coin", can_collect=False)
 
-coin_loja_1 =Item.Item(Game_Constants.grid_spacing * 1.1, Game_Constants.grid_spacing * 19.6,"coin",can_collect=False)
-coin_loja_2 =Item.Item(Game_Constants.grid_spacing * 4.1, Game_Constants.grid_spacing * 19.6,"coin",can_collect=False)
+coin_loja_1 =Item.Item(Game_Constants.grid_spacing * 35.5, Game_Constants.grid_spacing * 3.5,"coin",can_collect=False)
+coin_loja_2 =Item.Item(Game_Constants.grid_spacing * 37.5, Game_Constants.grid_spacing * 3.5,"coin",can_collect=False)
+coin_loja_3 =Item.Item(Game_Constants.grid_spacing * 30.2, Game_Constants.grid_spacing * 4,"coin",can_collect=False)
+coin_loja_4 =Item.Item(Game_Constants.grid_spacing * 32.6, Game_Constants.grid_spacing * 4,"coin",can_collect=False)
 
 
 
@@ -67,7 +75,7 @@ def draw_info(current_palyer: object, screen: object, damage_text_group,item_gro
     total_life = Game_Constants.player_standard_health
 
     heart_counter = total_life / hearts_number
-
+    
     half_heart_draw = False
 
     character_icon = Assets.Player_Images.Health_bar
@@ -124,17 +132,27 @@ def draw_info(current_palyer: object, screen: object, damage_text_group,item_gro
     screen.blit(*Teleport_Orb)
     screen.blit(*Ultimate_Orb)
     screen.blit(*Regeneration_Orb)
-    if Game_Constants.level_7:
-        if Game_Constants.steel_coletado ==False:
-            ShowText.draw_text(f"20", "AtariClassic", Game_Constants.WHITE_COLOR, Game_Constants.grid_spacing * 1.5, Game_Constants.grid_spacing * 19.6, screen)
+    if Game_Constants.level_1:
+        ShowText.draw_text(f"{Game_Constants.ataque_upgrade}/10", "AtariClassic", Game_Constants.RED_COLOR, Game_Constants.grid_spacing * 30, Game_Constants.grid_spacing * 3.5, screen)
+        ShowText.draw_text(f"{Game_Constants.vida_upgrade}/10", "AtariClassic", Game_Constants.GREEN_COLOR, Game_Constants.grid_spacing * 32.4, Game_Constants.grid_spacing * 3.5, screen)
+        ShowText.draw_text(f"{Game_Constants.ataque_preco}", "AtariClassic", Game_Constants.YELLOW_COLOR, Game_Constants.grid_spacing * 30.7, Game_Constants.grid_spacing * 4, screen)
+        ShowText.draw_text(f"{Game_Constants.vida_preco}", "AtariClassic", Game_Constants.YELLOW_COLOR, Game_Constants.grid_spacing * 33.1, Game_Constants.grid_spacing * 4, screen)
+        screen.blit(coin_loja_3.image, coin_loja_3.rect.center)
+        coin_loja_3.update(screen, item_group)
+        screen.blit(coin_loja_4.image, coin_loja_4.rect.center)
+        coin_loja_4.update(screen, item_group)
+        if Game_Constants.steel_coletado == False:
+            ShowText.draw_text(f"20", "AtariClassic", Game_Constants.YELLOW_COLOR, Game_Constants.grid_spacing * 36, Game_Constants.grid_spacing * 3.5, screen)
             screen.blit(coin_loja_1.image, coin_loja_1.rect.center)
             coin_loja_1.update(screen, item_group)
             
-        if Game_Constants.gold_coletado ==False:
-            ShowText.draw_text(f"30", "AtariClassic", Game_Constants.WHITE_COLOR, Game_Constants.grid_spacing * 4.5, Game_Constants.grid_spacing * 19.6, screen)
+        if Game_Constants.gold_coletado == False:
+            ShowText.draw_text(f"30", "AtariClassic", Game_Constants.YELLOW_COLOR, Game_Constants.grid_spacing * 38, Game_Constants.grid_spacing * 3.5, screen)
             screen.blit(coin_loja_2.image, coin_loja_2.rect.center)
             coin_loja_2.update(screen, item_group)
 
+   
+        
 
 
 
@@ -155,9 +173,12 @@ def draw_grid(screen: object) -> None:
 
 
 def change_level(screen: object, current_world: World, current_player: Character,
-                 level: int, item_group: object, enemy_projectiles_group: object, leafs_group: object) -> list:
+                 level: int, item_group: object, enemy_projectiles_group: object, leafs_group: object, upgrade_group = None) -> list:
 
     screen.fill(Game_Constants.BLACK_COLOR)  # Reset the background
+
+    if upgrade_group is not None:
+        upgrade_group.empty()
 
     Sound_Effects.Grass_Walking_Sound.stop()
     Sound_Effects.Walking_Sound.stop()
@@ -169,18 +190,19 @@ def change_level(screen: object, current_world: World, current_player: Character
     
 
     item_group.empty()
+    
 
     Worlds.Level_Title.__getitem__(Worlds.current_level).restart()
 
     enemy_projectiles_group.empty()
     leafs_group.empty()
 
-    # if level in {1, 2}:
-    #     for i in range(Game_Constants.leafs_quantity):
-    #         leaf_image = Background_Images.Tiny_Board_Leaf
-    #         new_leaf = Leaf.Leaf((-30) * i * leaf_image.get_width(), random.randint(0, Game_Constants.Window_height), leaf_image)
-    #         new_leaf.oscilation_position = random.randint(0, 100)
-    #         leafs_group.add(new_leaf)
+    if level in {1, 2}:
+        for i in range(Game_Constants.leafs_quantity):
+             leaf_image = Background_Images.Tiny_Board_Leaf
+             new_leaf = Leaf.Leaf((-30) * i * leaf_image.get_width(), random.randint(0, Game_Constants.Window_height), leaf_image)
+             new_leaf.oscilation_position = random.randint(0, 100)
+             leafs_group.add(new_leaf)
 
     # if level == 2:
     #     Worlds.Level_Spawn_Location[1] = (Game_Constants.grid_spacing * 20, Game_Constants.grid_spacing * 3)
@@ -212,6 +234,7 @@ def change_level(screen: object, current_world: World, current_player: Character
     if level==7:
         Worlds.World_Raids.__getitem__(level)[0][0]()
         Game_Constants.level_7 = True
+        Game_Constants.level_1 = False
 
 
               
@@ -372,7 +395,7 @@ def menu(screen: object, is_fullscreen: bool = False) -> None:
         Game_Title.update()
 
         Sound_Effects.Menu_Music.play_loop()
-
+        
         left_mouse_click = pygame.mouse.get_pressed()[0]
         
         if not pointer_rect.colliderect(Play_Button.rect):
@@ -469,7 +492,7 @@ def menu(screen: object, is_fullscreen: bool = False) -> None:
 def play(screen: object, is_fullscreen: bool = False) -> None:
 
     global interrupt_flag
-
+    
     Screen = screen
 
     Worlds.Start_Fade = True
@@ -516,6 +539,9 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
     # Creating Items Group :
     item_group = pygame.sprite.Group()
 
+    # Upgrades Group :
+    upgrade_group = pygame.sprite.Group()
+
     # Creating Enemies Projectiles Group :
     enemy_projectiles_group = pygame.sprite.Group()
 
@@ -542,13 +568,24 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
     item_group.add(red_coin)
     emerald = Item.Item(870, 640, "emerald")
     item_group.add(emerald)"""
+    ataque_up = Item.Item(Game_Constants.grid_spacing * 30.9, Game_Constants.grid_spacing * 2.5,"ataque_upgrade",False)
+    vida_ip = Item.Item(Game_Constants.grid_spacing * 33.4, Game_Constants.grid_spacing * 2.5,"vida_upgrade",False)
+    steel_bow = Item.Item(Game_Constants.grid_spacing * 36, Game_Constants.grid_spacing * 2.5,"steel_bow")
+            
+    gold_bow = Item.Item(Game_Constants.grid_spacing * 38, Game_Constants.grid_spacing * 2.5,"gold_bow")
+
+    upgrade_group.add(ataque_up)
+    upgrade_group.add(vida_ip)
+    upgrade_group.add(steel_bow)
+    upgrade_group.add(gold_bow)    
 
     Game_LOOP = True  # Setting Game Loop.
     while Game_LOOP:
-
+        # print(Game_Constants.player_standard_health)
+        
         Game_Clock.tick(Game_Constants.FPS)  # Setting FPS to 60.
         Screen.fill(Game_Constants.BLACK_COLOR)
-
+        
         # if not enemy_list and Worlds.current_level == 7 and not Worlds.end_game:
         #     next_level = (None, 1)
         #     Worlds.Current_Fade_Animation = Worlds.Fade_Animation[0]
@@ -676,19 +713,43 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
 
             # Checking for Player's interactions :
             for Event in pygame.event.get():
-
                 if Event.type == pygame.QUIT:  # Event for closing the game window.
                     Game_LOOP = False
                     interrupt_flag = True
 
                 right_mouse_pressed = pygame.mouse.get_pressed()[2]
+                
 
+                if Event.type == pygame.MOUSEBUTTONDOWN:
+                    posicao = Event.pos
+                    for sprite in upgrade_group:
+                        if sprite.rect.collidepoint(posicao) and sprite.item_type == "ataque_upgrade" and current_player.money>=Game_Constants.ataque_preco:      
+                            # print(f"Clique detectado em: {sprite.item_type}")
+                            Game_Constants.sword_base_damage += 3
+                            Game_Constants.standard_arrow_damage += 3
+                            Game_Constants.spirit_arrow_damage += 5
+                            Game_Constants.phantom_arrow_damage += 7
+
+                            Game_Constants.ataque_upgrade +=1
+                            current_player.money -= Game_Constants.ataque_preco
+                            Game_Constants.ataque_preco +=20
+                            
+                            # print(f"Ataque upgrade aumentado para: {Game_Constants.ataque_upgrade}")
+
+                        elif sprite.rect.collidepoint(posicao) and sprite.item_type == "vida_upgrade"and current_player.money>=Game_Constants.vida_preco:      
+                            # print(f"Clique detectado em: {sprite.item_type}")
+                            Game_Constants.player_standard_health += 20
+                            Game_Constants.hearts_quantity += 1
+                            Game_Constants.vida_upgrade +=1
+                            current_player.money -= Game_Constants.vida_preco
+                            Game_Constants.vida_preco +=20
+                            current_player.health = Game_Constants.player_standard_health
+                            
+                
                 if right_mouse_pressed:  # Interaction between objects in map :
                     for interaction in Worlds.Level_Interactions.__getitem__(Worlds.current_level):
-
                         # if interaction has not occured yet :
                         if not interaction[3]:
-
                             if current_player.hitbox.colliderect(interaction[2]) and current_player.can_interact:
                                 interaction[4](interaction)
 
@@ -928,6 +989,8 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
             # Updating All Items :
             item_group.update(current_player, text_group)
 
+            upgrade_group.update(current_player, text_group)
+
             # Updating All Enemy Projectiles :
             for projectile in enemy_projectiles_group:
                 projectile.update(current_player, current_objects)
@@ -954,7 +1017,7 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
         # Drawing Enemies :
         for enemy in enemy_list:
             enemy.draw(Screen)
-        print(Game_Constants.dano_fuzzy)
+        
         # Drawing Weapons :
         weapon.draw(Screen, current_player)
 
@@ -963,11 +1026,17 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
 
         # Drawing Arrows Group :
         for arrow in arrow_group:
-            arrow.draw(Screen)
-
+            arrow.draw(Screen) 
+                        
         # Drawing Items Group :
         item_group.draw(Screen)
+        for sprite in item_group:
+            sprite.desenhar_hitbox(screen)
 
+        upgrade_group.draw(Screen)
+        for sprite in upgrade_group:
+            sprite.desenhar_hitbox(screen)
+            
         # Tree's from the current map :
         if Worlds.current_level == 1:
             for tree in Worlds.First_World_Trees:
@@ -1062,7 +1131,7 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
                     Worlds.Current_Fade_Animation = Worlds.Fade_Animation[1]
 
                     enemy_list = change_level(Screen, current_world, current_player,
-                                              next_level[1], item_group, enemy_projectiles_group, leafs_group)
+                                              next_level[1], item_group, enemy_projectiles_group, leafs_group, upgrade_group)
 
                     for enemy in enemy_list:
                         enemy.can_move = False
@@ -1101,7 +1170,7 @@ def restart(screen: object) -> None:
 
     Worlds.current_level = 1
     Worlds.raid_index = 0
-
+    
     Worlds.button_3.restart()
     Worlds.button_4.restart()
 
@@ -1250,28 +1319,38 @@ def restart(screen: object) -> None:
                     lambda: raid(Worlds.current_player, 4, 0, Worlds.Level_Enemies.__getitem__(6), wanted_monsters_list=["muddy", "goblin"]),
                     lambda: raid(Worlds.current_player, 5, 0, Worlds.Level_Enemies.__getitem__(6), wanted_monsters_list=["muddy"])], [True, True, True, True]),
 
-               7: ([lambda: raid(Worlds.current_player, 6, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["zombie", "skeleton"]),
-                    lambda: raid(Worlds.current_player, 4, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["goblin"]),
-                    lambda: raid(Worlds.current_player, 4, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["muddy", "goblin"]),
-                    lambda: raid(Worlds.current_player, 5, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["muddy"])], [True, True, True, True])}
+               7: ([lambda: raid(Worlds.current_player, 3, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["imp"]),
+                    lambda: raid(Worlds.current_player, 5, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["imp"]),
+                    lambda: raid(Worlds.current_player, 3, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["skeleton"]),
+                    lambda: raid(Worlds.current_player, 5, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["imp", "skeleton"]),
+                    lambda: raid(Worlds.current_player, 3, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["zombie"]),
+                    lambda: raid(Worlds.current_player, 5, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["imp", "zombie"]),
+                    lambda: raid(Worlds.current_player, 3, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["goblin"]),
+                    lambda: raid(Worlds.current_player, 6, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["goblin", "skeleton"]),
+                    lambda: raid(Worlds.current_player, 6, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["skeleton", "zombie"]),
+                    lambda: raid(Worlds.current_player, 5, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["muddy"]),
+                    lambda: raid(Worlds.current_player, 6, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["muddy", "skeleton"]),
+                    lambda: raid(Worlds.current_player, 5, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["muddy", "goblin"]),
+                    lambda: raid(Worlds.current_player, 1, 0, Worlds.Level_Enemies.__getitem__(7), wanted_monsters_list=["demon"])], [True, True, True, True,True,True,True,True,True,True,True,True,True])}
 
     Worlds.Level_Items = {
-        1: [Item.Item(Game_Constants.grid_spacing * 37 + 16, Game_Constants.grid_spacing * 17, "emerald")],
+        1: [],
         2: [],
         3: [],
-        4: [], 5: [],
+        4: [], 
+        5: [],
         6: [],
-        7: [Item.Item(Game_Constants.grid_spacing * 1, Game_Constants.grid_spacing * 20.7,
-                      "steel_bow"),Item.Item(Game_Constants.grid_spacing * 4, Game_Constants.grid_spacing * 20.7,
-                      "gold_bow")]}
+        7: []}
 
     Worlds.current_player = Character.Character(Game_Constants.Window_width / 2 - 16 * Game_Constants.grid_spacing - 16,
                                                 Game_Constants.Window_height / 2 + 18, Game_Constants.player_standard_health)
-
+    
     aux_group = pygame.sprite.Group()
-    aux_group.add(Item.Item(Game_Constants.grid_spacing * 37 + 16, Game_Constants.grid_spacing * 17, "emerald"))
+    aux_group.add(Item.Item(Game_Constants.grid_spacing * 37 + 16, Game_Constants.grid_spacing * 17, "steel_bow"))
 
     change_level(screen, World.World(), Worlds.current_player, 1, aux_group, pygame.sprite.Group(), pygame.sprite.Group())
+    Game_Constants.level_7 = False
+    Game_Constants.level_1 = True
 
 
 def death_screen(screen: object, is_fullscreen: bool = False) -> None:
@@ -1514,11 +1593,20 @@ def raid(current_player: Character, quantity: int, frequency: Union[int, float],
             fim = time.time()
             tempo_decorrido= fim - inicio
 
+            #calcular o dano recebido durante a wave
+            Game_Constants.Dano_em_waves.append(Game_Constants.Dano_levado)
+            Game_Constants.Dano_levado=0
+
+            Game_Constants.Dano_Player_wave.append(Game_Constants.Dano_Player)
+            Game_Constants.Dano_Player=0
+
+            #por o tempo levado em cada wave em uma lista
             if not Game_Constants.tempos_waves_derrotadas:
                 Game_Constants.tempos_waves_derrotadas.append(round(tempo_decorrido,3))
             else:
                 Game_Constants.tempos_waves_derrotadas.append(round(tempo_decorrido,3)- round((len(Game_Constants.tempos_waves_derrotadas)-1)))
             
+            #sistema fuzzy inicial
             if Game_Constants.tempos_waves_derrotadas:
                 somatorio = Game_Constants.tempos_waves_derrotadas
                 media_tempo = sum(somatorio) / len(Game_Constants.tempos_waves_derrotadas)
@@ -1549,3 +1637,19 @@ def raid(current_player: Character, quantity: int, frequency: Union[int, float],
 
     thread = threading.Thread(target=run_raid)
     thread.start()
+    
+'''def Fuzzy(tempo:float,dano:int):
+    tempo_fuzzy = np.arange(0,101,0.1)
+    dano_fuzzy = np.arange(0,101,1)
+    dano_player_fuzzy = np.arange(0,201,1)
+    resultado_fuzzy = np.arange(0,11,1)
+
+    tempo = ctrl.Antecedent(tempo_fuzzy, "Tempo")
+    dano = ctrl.Antecedent(dano_fuzzy, "Dano")
+    dano_player = ctrl.Antecedent(dano_player_fuzzy, "DanoPlayer")
+    resultado = ctrl.Consequent(resultado_fuzzy,"Resultado")
+
+    tempo["lento"] = fuzz.zmf(tempo_fuzzy,)'''
+
+
+

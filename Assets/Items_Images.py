@@ -27,3 +27,11 @@ Emerald = [MyFunctions.pygame_scale_img(pygame.image.load(f"Assets/Items/Coins/E
 
 Red_Potion = [MyFunctions.pygame_scale_img(pygame.image.load(f"Assets/Items/Potions/Red_Potion/tile{i:0>3}.png"),
                                      Game_Constants.item_scale) for i in range(8)]
+
+attack_upgrade = [MyFunctions.pygame_scale_img(pygame.image.load(f"Assets/Items/Upgrades/attack.png"),
+                                     Game_Constants.item_scale)]
+
+vida_upgrade = [MyFunctions.pygame_scale_img(pygame.image.load(f"Assets/Items/Upgrades/vida.png"),
+                                     Game_Constants.item_scale)]
+
+

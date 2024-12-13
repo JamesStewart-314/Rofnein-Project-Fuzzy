@@ -33,6 +33,7 @@ end_game = False
 
 current_player = Character.Character(Game_Constants.Window_width / 2 - 16 * Game_Constants.grid_spacing - 16,
                                      Game_Constants.Window_height / 2 + 18, Game_Constants.player_standard_health)
+current_player.money = Game_Constants.moedas
 
 familiar = Familiar.Familiar(current_player.rect.x, current_player.rect.y, "bat")
 
@@ -631,16 +632,17 @@ Level_Spawn_Location = {1: (Game_Constants.Window_width / 2 - 16 * Game_Constant
 
 Level_Enemies = {1: [], 2: Second_World_Enemies, 3: [], 4: [], 5: [], 6: [], 7: []}
 
-Level_Items = {1: [Item.Item(Game_Constants.grid_spacing * 37 + 16, Game_Constants.grid_spacing * 17, "emerald")],
+Level_Items = {1:[Item.Item(Game_Constants.grid_spacing * 5, Game_Constants.grid_spacing * 5, "coin"),
+                  Item.Item(Game_Constants.grid_spacing * 5, Game_Constants.grid_spacing * 5, "vida_upgrade"),
+                  Item.Item(Game_Constants.grid_spacing * 1, Game_Constants.grid_spacing * 20.7,"steel_bow")],
                2: [],
                3: [],
                4: [], 
                5: [],
                6: [],
-               7: [Item.Item(Game_Constants.grid_spacing * 1.02, Game_Constants.grid_spacing * 20.5,
-                      "static_coin",can_collect=False),Item.Item(Game_Constants.grid_spacing * 19 + 16, Game_Constants.grid_spacing * 11,
-                      "steel_bow"),Item.Item(Game_Constants.grid_spacing * 4, Game_Constants.grid_spacing * 20,
-                      "gold_bow")]}
+               7: [Item.Item(Game_Constants.grid_spacing * 1.02, Game_Constants.grid_spacing * 20.5,"static_coin",can_collect=False),
+                   Item.Item(Game_Constants.grid_spacing * 1, Game_Constants.grid_spacing * 20.7,"steel_bow"),
+                   Item.Item(Game_Constants.grid_spacing * 4, Game_Constants.grid_spacing * 20.7,"gold_bow")]}
 
 World_Raids = {1: [], 2: [], 3: [],
 
@@ -657,10 +659,19 @@ World_Raids = {1: [], 2: [], 3: [],
                     lambda: MyFunctions_2.raid(current_player, 4, 0, Level_Enemies.__getitem__(6), wanted_monsters_list=["muddy", "goblin"]),
                     lambda: MyFunctions_2.raid(current_player, 5, 0, Level_Enemies.__getitem__(6), wanted_monsters_list=["muddy"])], [True, True, True, True]),
 
-               7: ([lambda: MyFunctions_2.raid(current_player, 6, 0, Level_Enemies.__getitem__(7), wanted_monsters_list=["zombie", "skeleton"]),
-                    lambda: MyFunctions_2.raid(current_player, 4, 0, Level_Enemies.__getitem__(7), wanted_monsters_list=["goblin"]),
-                    lambda: MyFunctions_2.raid(current_player, 4, 0, Level_Enemies.__getitem__(7), wanted_monsters_list=["muddy", "goblin"]),
-                    lambda: MyFunctions_2.raid(current_player, 5, 0, Level_Enemies.__getitem__(7), wanted_monsters_list=["muddy"])], [True, True, True, True])}
+               7: ([lambda: MyFunctions_2.raid(current_player, 3, 0, Level_Enemies.__getitem__(7), wanted_monsters_list=["imp"]),
+                    lambda: MyFunctions_2.raid(current_player, 5, 0, Level_Enemies.__getitem__(7), wanted_monsters_list=["imp"]),
+                    lambda: MyFunctions_2.raid(current_player, 3, 0, Level_Enemies.__getitem__(7), wanted_monsters_list=["skeleton"]),
+                    lambda: MyFunctions_2.raid(current_player, 5, 0, Level_Enemies.__getitem__(7), wanted_monsters_list=["imp", "skeleton"]),
+                    lambda: MyFunctions_2.raid(current_player, 3, 0, Level_Enemies.__getitem__(7), wanted_monsters_list=["zombie"]),
+                    lambda: MyFunctions_2.raid(current_player, 5, 0, Level_Enemies.__getitem__(7), wanted_monsters_list=["imp", "zombie"]),
+                    lambda: MyFunctions_2.raid(current_player, 3, 0, Level_Enemies.__getitem__(7), wanted_monsters_list=["goblin"]),
+                    lambda: MyFunctions_2.raid(current_player, 6, 0, Level_Enemies.__getitem__(7), wanted_monsters_list=["goblin", "skeleton"]),
+                    lambda: MyFunctions_2.raid(current_player, 6, 0, Level_Enemies.__getitem__(7), wanted_monsters_list=["skeleton", "zombie"]),
+                    lambda: MyFunctions_2.raid(current_player, 5, 0, Level_Enemies.__getitem__(7), wanted_monsters_list=["muddy"]),
+                    lambda: MyFunctions_2.raid(current_player, 6, 0, Level_Enemies.__getitem__(7), wanted_monsters_list=["muddy", "skeleton"]),
+                    lambda: MyFunctions_2.raid(current_player, 5, 0, Level_Enemies.__getitem__(7), wanted_monsters_list=["muddy", "goblin"]),
+                    lambda: MyFunctions_2.raid(current_player, 1, 0, Level_Enemies.__getitem__(7), wanted_monsters_list=["demon"])], [True, True, True, True,True,True,True,True,True,True,True,True,True])}
 
 Level_Title = {1: ShowFloatingText.FloatingText((Game_Constants.Window_width - Titles_Images.Level_1_Title.get_width()) / 2,
                                            Game_Constants.Window_height / 23,

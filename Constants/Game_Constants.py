@@ -1,5 +1,5 @@
 import pygame
-
+from pygame import Surface
 pygame.init()
 
 Window_width: int = 1_280
@@ -30,8 +30,9 @@ horizontal_leaf_speed: int | float = 3
 Arrow_standard_speed: int | float = 8
 spirit_arrow_change_velocity: int | float = 50
 
-player_standard_health: int | float = 100
-hearts_quantity: int = 5
+vida_upgrade = 0
+player_standard_health: int | float = 100 
+hearts_quantity: int = 5 
 potion_heal: int | float = player_standard_health / hearts_quantity
 
 drop_rate: int = 2  # 1 = 50% -> (0, 1)   |||   2 = -> 33,3% -> (0, 0, 1) etc...
@@ -65,6 +66,7 @@ weapon_change_cooldown: int | float = 2_000  # 2,000 ms = 2 sec
 
 SCALE: int = 2
 Custom_bows_constant: int | float = 1.2
+Custom_ataque_constant: int | float = 1.2
 damage_text_size: int = 15
 Fireball_Scale: int = 1
 Bone_Scale: int = 1
@@ -72,11 +74,13 @@ item_scale: int = 1
 static_coin_scale: int | float = 1.5
 hearts_scale: int | float = 1.4
 Bow_scale: int | float = 2 / 3
+ataque_scale: int| float = 2/3
 Arrow_scale: int = 1
 Sword_scale: int = 1
 UI_Icons_Scale: int | float = 1 / 3
 
-sword_base_damage: int | float = 3000
+ataque_upgrade = 0
+sword_base_damage: int | float = 15 
 bone_base_damage: int | float = 10
 standard_arrow_damage: int | float = 10
 fireball_base_damage: int | float = 20
@@ -97,10 +101,19 @@ leafs_quantity: int = 3
 tempos_waves_derrotadas = []
 dano_fuzzy = 1
 level_7 =False
+level_1=True
 steel_coletado =False
 gold_coletado = False
+Dano_levado = 0
+Dano_em_waves = []
+Dano_Player = 0
+Dano_Player_wave = []
 
 
+moedas = 30
+player_iventario = ["Sword", "Bow"]
+ataque_preco = 30
+vida_preco=30
 
 # ------------------------------- COLORS SECTION ------------------------------- #
 
