@@ -1744,8 +1744,8 @@ def Fuzzy(tempo_wave: float, vida_player: int):
     vida["alto"] = fuzz.smf(vida_fuzzy,40,55)
 
     resultado["facil"] = fuzz.zmf(resultado_fuzzy,0,3)
-    resultado["medio"] = fuzz.trapmf(resultado_fuzzy,[3,5,6,7])
-    resultado["dificil"] =fuzz.smf(resultado_fuzzy,7,12)
+    resultado["medio"] = fuzz.trapmf(resultado_fuzzy,[2,5,6,8])
+    resultado["dificil"] =fuzz.smf(resultado_fuzzy,6,12)
 
     rule1 = ctrl.Rule(tempo['rapido'] & vida["baixo"],resultado["dificil"]) 
     rule2 = ctrl.Rule(tempo['rapido'] & vida['medio'], resultado["dificil"])
