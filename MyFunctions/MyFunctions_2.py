@@ -616,6 +616,7 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
                     new_leaf.angle = random.randint(0, 360)
                     leafs_group.add(new_leaf)
             else:
+                music_inicio.stop()
                 Sound_Effects.Wind_Sound.stop()
                 Sound_Effects.Dungeon_Air.play_loop()
 
@@ -630,16 +631,12 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
                     music_dungen_final.stop()
                     music_boss.play_loop()
 
-                if enemy_list:
-                    Sound_Effects.Boss_Fight_Music[1].stop()
-                    Sound_Effects.Boss_Fight_Music[0].play_loop()
-                else:
-                    Sound_Effects.Boss_Fight_Music[0].stop()
-                    Sound_Effects.Boss_Fight_Music[1].play_loop()
-
-            
-
-            
+                # if enemy_list:
+                #     Sound_Effects.Boss_Fight_Music[1].stop()
+                #     Sound_Effects.Boss_Fight_Music[0].play_loop()
+                # else:
+                #     Sound_Effects.Boss_Fight_Music[0].stop()
+                #     Sound_Effects.Boss_Fight_Music[1].play_loop()
 
             # Defining initial speed :
             dx = 0
@@ -980,9 +977,6 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
             for tree in Worlds.Second_World_Trees:
                 Screen.blit(tree[0], tree[1])
 
-        # Drawing Tutorial Sign :
-        if Worlds.current_level == 1:
-            Worlds.Tutorial_Sign.draw(Screen, current_player)
 
         # Drawind the Familiar :
         Worlds.familiar.draw(Screen)
@@ -1016,6 +1010,10 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
 
         # Display Player Info :
         draw_info(current_player, Screen, damage_text_group,item_group)
+        
+        # Drawing Tutorial Sign :
+        if Worlds.current_level == 1:
+            Worlds.Tutorial_Sign.draw(Screen, current_player)
 
         # Display of the Game Grid :
         # MyFunctions_2.draw_grid(Screen)
@@ -1640,7 +1638,7 @@ def raid(current_player: Character, quantity: int, frequency: Union[int, float],
                 __interval_time__ = pygame.time.get_ticks()
                 __counter__ += 1
 
-                # coordinate_x = coordinate_x if coordinate_x else random.randint()
+                # coordinate_x = coordinate_x or random.randint()
 
                 if not coordinate_x:
                     aux_coordinate_x = random.randint(64, Game_Constants.Window_width - 64)
@@ -1773,11 +1771,11 @@ def Fuzzy(tempo_wave: float, vida_player: int):
     resultado_valor = SE.output["Resultado"]
 
     if resultado_valor <= 3:
-        Game_Constants.dificuldade_mult =0.5
+        Game_Constants.dificuldade_mult = 0.5
     elif 3 < resultado_valor <= 6:
         Game_Constants.dificuldade_mult = 1
     else:
-        Game_Constants.dificuldade_mult =2
+        Game_Constants.dificuldade_mult = 2
     print(f"dificuldade do jogo:{Game_Constants.dificuldade_mult}")
     print("----------------------------------------------")
     print("")
