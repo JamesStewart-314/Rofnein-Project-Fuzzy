@@ -117,6 +117,9 @@ class Monster:
                     # Shoots 75% faster :
                     self.shoot_cooldown = Monster.monster_dict.__getitem__(self.current_monster)[5] // 4
                     self.speed = Monster.monster_dict.__getitem__(self.current_monster)[4] + 0.3
+                if self.health <= 0:
+                    
+                    MyFunctions_2.won_screen(Game_Constants.Screen)
 
             if pygame.time.get_ticks() - self.last_hit > Game_Constants.stun_enemy_cooldown:
                 self.stunned = False

@@ -604,7 +604,9 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
 
         if current_player.alive:  # if Player still alive :
 
-            if Worlds.current_level in {1, 2}:
+            if Worlds.current_level == 1:
+                
+                music_inicio.play_loop()
                 Sound_Effects.Wind_Sound.play_loop()
 
                 if len(leafs_group) < Game_Constants.leafs_quantity:
@@ -617,40 +619,23 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
                 Sound_Effects.Wind_Sound.stop()
                 Sound_Effects.Dungeon_Air.play_loop()
 
-            if Worlds.current_level == 1:
-                if not enemy_list:
-                    Sound_Effects.First_Level_Music[1].stop()
-                    Sound_Effects.First_Level_Music[0].play_loop()
-                else:
-                    Sound_Effects.First_Level_Music[0].stop()
-                    Sound_Effects.First_Level_Music[1].play_loop()
-
-
-            if Game_Constants.level_1:
-                Sound_Effects.Wind_Sound.play()
-                music_dungeon_comeco.stop()
-                music_dungen_final.stop()
-                music_boss.stop()
-
-               
-                music_inicio.play()
-            '''if Game_Constants.level_7:
+            if Worlds.current_level == 7:
                 music_inicio.stop()
                 if Game_Constants.wave<8:
-                    music_dungeon_comeco.play()
+                    music_dungeon_comeco.play_loop()
                 elif Game_Constants.wave>=8 and Game_Constants.wave<=11:
                     music_dungeon_comeco.stop()
-                    music_dungen_final.play()
+                    music_dungen_final.play_loop()
                 if Game_Constants.wave>11:
                     music_dungen_final.stop()
-                    music_boss.play()
+                    music_boss.play_loop()
 
                 if enemy_list:
                     Sound_Effects.Boss_Fight_Music[1].stop()
                     Sound_Effects.Boss_Fight_Music[0].play_loop()
                 else:
                     Sound_Effects.Boss_Fight_Music[0].stop()
-                    Sound_Effects.Boss_Fight_Music[1].play_loop()'''
+                    Sound_Effects.Boss_Fight_Music[1].play_loop()
 
             
 
@@ -689,8 +674,9 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
 
                         elif sprite.rect.collidepoint(posicao) and sprite.item_type == "vida_upgrade"and current_player.money>=Game_Constants.vida_preco and Game_Constants.vida_upgrade<=9:      
                             # print(f"Clique detectado em: {sprite.item_type}")
-                            Game_Constants.player_standard_health += 20
-                            Game_Constants.hearts_quantity += 1
+                            Game_Constants.player_standard_health += 10
+                            if Game_Constants.vida_upgrade%2==1:
+                                Game_Constants.hearts_quantity += 1
                             Game_Constants.vida_upgrade +=1
                             current_player.money -= Game_Constants.vida_preco
                             Game_Constants.vida_preco +=20
@@ -846,9 +832,9 @@ def play(screen: object, is_fullscreen: bool = False) -> None:
 
         else:  # if player is Dead :
 
-            for music in itertools.chain(Sound_Effects.First_Level_Music, Sound_Effects.Second_Level_Music,
-                                         Sound_Effects.Dungeon_Music, Sound_Effects.Boss_Fight_Music):
-                music.stop()
+            music_boss.stop()
+            music_dungen_final.stop()
+            music_dungeon_comeco.stop()
 
             Sound_Effects.Grass_Walking_Sound.stop()
             Sound_Effects.Walking_Sound.stop()
@@ -1304,7 +1290,7 @@ def restart(screen: object) -> None:
 
 def death_screen(screen: object, is_fullscreen: bool = False) -> None:
     global interrupt_flag
-
+    Game_Constants.wave = 1
     Screen = screen
     FullScreen = is_fullscreen
 
@@ -1360,6 +1346,176 @@ def death_screen(screen: object, is_fullscreen: bool = False) -> None:
         # Death Title :
         Death_Title.draw(Screen)
         Death_Title.update()
+
+        if not pointer_rect.colliderect(Restart_Button.rect):
+            Restart_Button.draw(Screen)
+            Restart_Button.update()
+            Restart_Button_Pressed.rect.center = Restart_Button.rect.center
+        else:
+            Restart_Button_Pressed.draw(Screen)
+
+            left_mouse_pressed = pygame.mouse.get_pressed()[0]
+
+            if left_mouse_pressed and not Worlds.Do_Fade:
+                Sound_Effects.Button_Pressed.play()
+                Worlds.Current_Fade_Animation = Worlds.Fade_Animation[0]
+                Worlds.Current_Fade_Animation.restart()
+                Worlds.Do_Fade = 1
+                go_restart = True
+
+        if not pointer_rect.colliderect(Menu_Button.rect):
+            Menu_Button.draw(Screen)
+            Menu_Button.update()
+            Menu_Button_Pressed.rect.center = Menu_Button.rect.center
+
+        else:
+            Menu_Button_Pressed.draw(Screen)
+            left_mouse_pressed = pygame.mouse.get_pressed()[0]
+
+            if left_mouse_pressed and not Worlds.Do_Fade:
+                Sound_Effects.Button_Pressed.play()
+                Worlds.Current_Fade_Animation = Worlds.Fade_Animation[0]
+                Worlds.Current_Fade_Animation.restart()
+                Worlds.Do_Fade = 1
+                go_menu = True
+
+        if pointer_rect.colliderect(Restart_Button.rect) or pointer_rect.colliderect(Menu_Button.rect):
+            Sound_Effects.Button.play_once()
+            Sound_Effects.Button.just_one_time = True
+        else:
+            Sound_Effects.Button.just_one_time = False
+
+        if Worlds.Do_Fade:
+
+            Worlds.Current_Fade_Animation.draw(Screen)
+
+            if not Worlds.Current_Fade_Animation.end_fade:
+                Worlds.Current_Fade_Animation.update()
+
+            else:
+
+                Worlds.Current_Fade_Animation.restart()
+
+                Worlds.Do_Fade -= 1
+
+                if go_menu:
+                    go_restart = False
+                if go_restart:
+                    go_menu = False
+
+                if go_menu:
+                    Sound_Effects.Menu_Music.stop()
+                    restart(Screen)
+                    menu(Screen, is_fullscreen)
+
+                if go_restart:
+                    Sound_Effects.Menu_Music.stop()
+                    restart(Screen)
+                    play(Screen, is_fullscreen)
+
+        for Event in pygame.event.get():
+            if Event.type == pygame.QUIT:  # Event for closing the game window.
+                Game_Loop = False
+                interrupt_flag = True
+
+            if Event.type == pygame.KEYDOWN:
+                if Event.key == pygame.K_F11:
+                    if FullScreen:
+                        Screen = pygame.display.set_mode((Game_Constants.Window_width,
+                                                          Game_Constants.Window_height))
+                        FullScreen = not FullScreen
+                    else:
+                        Screen = pygame.display.set_mode((Game_Constants.Window_width,
+                                                          Game_Constants.Window_height), pygame.FULLSCREEN)
+                        FullScreen = not FullScreen
+
+                if Event.key == pygame.K_RETURN and not (go_restart or go_menu):
+                    Sound_Effects.Button_Pressed.play()
+                    Worlds.Current_Fade_Animation = Worlds.Fade_Animation[0]
+                    Worlds.Current_Fade_Animation.restart()
+                    Worlds.Do_Fade = 1
+                    go_restart = True
+
+        # Updating the Pointer :
+        pygame.mouse.set_visible(False)  # Hiding the original pointer
+        Pointer_rect = pointer_rect
+        Pointer_rect.center = pygame.mouse.get_pos()
+        if (0 < pygame.mouse.get_pos()[0] < Game_Constants.Window_width - 1) and \
+                (Game_Constants.Window_height - 1 > pygame.mouse.get_pos()[1] > 0):
+            Screen.blit(custom_pointer, Pointer_rect.center)
+
+        pygame.display.update()
+
+    pygame.quit()
+def won_screen(screen: object, is_fullscreen: bool = False) -> None:
+    global interrupt_flag
+
+    Screen = screen
+    FullScreen = is_fullscreen
+    music_boss.stop()
+    Worlds.Start_Fade = True
+    Worlds.Current_Fade_Animation = Worlds.Fade_Animation[1]
+    Worlds.Do_Fade = 1
+
+    for fade in Worlds.Fade_Animation:
+        fade.change_rate = Game_Constants.second_fade_transition_rate
+
+    game_clock = pygame.time.Clock()
+
+    # Getting the custom pointer :
+    custom_pointer = Background_Images.Pointer
+    pointer_rect = custom_pointer.get_rect()
+    pointer_rect.center = pygame.mouse.get_pos()
+
+    go_restart = False
+    go_menu = False
+
+    Won_Title = (Titles_Images.Won_Title, Titles_Images.Won_Title_Rect)
+    Won_Title[1].x, Won_Title[1].y = (Game_Constants.Window_width - Titles_Images.Won_Title.get_width()) / 2, \
+                                         Game_Constants.Window_height / 15
+    Won_Title = FloatingText.FloatingText(Won_Title[1].x, Won_Title[1].y, Won_Title[0])
+
+    Won_but_Title = (Titles_Images.Won_but_Title, Titles_Images.Won_but_Title_Rect)
+    Won_but_Title[1].x, Won_but_Title[1].y = (Game_Constants.Window_width - Titles_Images.Won_but_Title.get_width()) / 2, \
+                                         Game_Constants.Window_height / 15
+    Won_but_Title = FloatingText.FloatingText(Won_but_Title[1].x, Won_but_Title[1].y, Won_but_Title[0])
+
+
+
+    Restart_Button = (Buttons.Restart_Button, Buttons.Restart_Button_Rect)
+    Restart_Button[1].center = (Game_Constants.Window_width / 2, 9 * Game_Constants.Window_height / 18)
+    Restart_Button = FloatingText.FloatingText(Restart_Button[1].x, Restart_Button[1].y, Restart_Button[0],
+                                               speed=0.08, amplitude=2)
+
+    Restart_Button_Pressed = (Buttons.Restart_Button_Pressed, Buttons.Restart_Button_Pressed_Rect)
+    Restart_Button_Pressed[1].center = Restart_Button.rect.center
+    Restart_Button_Pressed = FloatingText.FloatingText(Restart_Button_Pressed[1].x, Restart_Button_Pressed[1].y,
+                                                       Restart_Button_Pressed[0], speed=0.08, amplitude=2)
+
+    Menu_Button = (Buttons.Menu_Button, Buttons.Menu_Button_Rect)
+    Menu_Button[1].center = (Game_Constants.Window_width / 2, 13 * Game_Constants.Window_height / 18)
+    Menu_Button = FloatingText.FloatingText(Menu_Button[1].x, Menu_Button[1].y, Menu_Button[0],
+                                            speed=0.08, amplitude=2)
+
+    Menu_Button_Pressed = (Buttons.Menu_Button_Pressed, Buttons.Menu_Button_Pressed_Rect)
+    Menu_Button_Pressed[1].center = Menu_Button.rect.center
+    Menu_Button_Pressed = FloatingText.FloatingText(Menu_Button_Pressed[1].x, Menu_Button_Pressed[1].y,
+                                                    Menu_Button_Pressed[0], speed=0.08, amplitude=2)
+
+    Game_Loop = True
+    while Game_Loop:
+        Screen.fill(Game_Constants.BLACK_COLOR)
+        game_clock.tick(Game_Constants.FPS)
+
+        Sound_Effects.Menu_Music.play_loop()
+
+        # Death Title :
+        if Game_Constants.vida_upgrade == 10 and Game_Constants.ataque_upgrade == 10 and Game_Constants.steel_coletado and Game_Constants.gold_coletado:
+            Won_Title.draw(Screen)
+            Won_Title.update()
+        else:
+            Won_but_Title.draw(Screen)
+            Won_but_Title.update()
 
         if not pointer_rect.colliderect(Restart_Button.rect):
             Restart_Button.draw(Screen)
@@ -1552,7 +1708,7 @@ def raid(current_player: Character, quantity: int, frequency: Union[int, float],
 
             
             # If player has defeated the Raid :
-            Worlds.World_Raids.__getitem__(Worlds.current_level)[1][Worlds.raid_index] = False
+            Worlds.World_Raids.__getitem__(Worlds.current_level)[0][Worlds.raid_index] = False
 
             Worlds.raid_index += 1
 
@@ -1588,8 +1744,8 @@ def Fuzzy(tempo_wave: float, vida_player: int):
     vida["alto"] = fuzz.smf(vida_fuzzy,40,55)
 
     resultado["facil"] = fuzz.zmf(resultado_fuzzy,0,3)
-    resultado["medio"] = fuzz.trapmf(resultado_fuzzy,[3,5,6,7])
-    resultado["dificil"] =fuzz.smf(resultado_fuzzy,7,12)
+    resultado["medio"] = fuzz.trapmf(resultado_fuzzy,[2,5,6,8])
+    resultado["dificil"] =fuzz.smf(resultado_fuzzy,6,12)
 
     rule1 = ctrl.Rule(tempo['rapido'] & vida["baixo"],resultado["dificil"]) 
     rule2 = ctrl.Rule(tempo['rapido'] & vida['medio'], resultado["dificil"])
