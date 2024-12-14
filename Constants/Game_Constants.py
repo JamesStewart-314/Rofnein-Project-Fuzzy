@@ -108,7 +108,7 @@ gold_coletado = False
 Dano_levado = 0
 resultado = []
 dificuldade_mult = 1
-wave = 0
+wave = 1
 
 
 moedas = 30

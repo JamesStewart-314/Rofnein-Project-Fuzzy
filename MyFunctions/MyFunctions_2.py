@@ -1290,7 +1290,7 @@ def restart(screen: object) -> None:
 
 def death_screen(screen: object, is_fullscreen: bool = False) -> None:
     global interrupt_flag
-
+    Game_Constants.wave = 1
     Screen = screen
     FullScreen = is_fullscreen
 
@@ -1708,7 +1708,7 @@ def raid(current_player: Character, quantity: int, frequency: Union[int, float],
 
             
             # If player has defeated the Raid :
-            Worlds.World_Raids.__getitem__(Worlds.current_level)[1][Worlds.raid_index] = False
+            Worlds.World_Raids.__getitem__(Worlds.current_level)[0][Worlds.raid_index] = False
 
             Worlds.raid_index += 1
 
