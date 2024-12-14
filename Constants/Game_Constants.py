@@ -116,6 +116,11 @@ player_iventario = ["Sword", "Bow"]
 ataque_preco = 30
 vida_preco=30
 
+is_fullscreen: bool = False
+Screen: Surface = pygame.display.set_mode(
+    (Window_width, Window_height)) if not is_fullscreen \
+    else pygame.display.set_mode((Window_width, Window_height), pygame.FULLSCREEN)
+
 # ------------------------------- COLORS SECTION ------------------------------- #
 
 BLACK_COLOR: tuple[int, int, int] | list[int] = (0, 0, 0)

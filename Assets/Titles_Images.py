@@ -68,3 +68,17 @@ Level_7_Title = MyFunctions.pygame_scale_img(Level_7_Title, (int(Level_7_Title_W
 Level_7_Title_Rect = Level_7_Title.get_rect()
 
 # ------------------------------------------------------------------------------------------------------------------ #
+
+Won_but_Title = pygame.image.load("Assets/Titles/YOU_WON_BUT.png")
+Won_but_Title_Width = Won_but_Title.get_width()
+Won_but_Title_Height = Won_but_Title.get_height()
+Won_but_Title = MyFunctions.pygame_scale_img(Won_but_Title, (int(Won_but_Title_Width / 2.4), int(Won_but_Title_Height / 2.4)))
+Won_but_Title_Rect = Won_but_Title.get_rect()
+
+# ------------------------------------------------------------------------------------------------------------------ #
+
+Won_Title = pygame.image.load("Assets/Titles/YOU_WON.png")
+Won_Title_Width = Won_Title.get_width()
+Won_Title_Height = Won_Title.get_height()
+Won_Title = MyFunctions.pygame_scale_img(Won_Title, (int(Won_Title_Width / 2.4), int(Won_Title_Height / 2.4)))
+Won_Title_Rect = Won_Title.get_rect()
