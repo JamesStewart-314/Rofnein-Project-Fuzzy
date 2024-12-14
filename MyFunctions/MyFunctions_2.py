@@ -1733,9 +1733,9 @@ def Fuzzy(tempo_wave: float, vida_player: int):
     vida = ctrl.Antecedent(vida_fuzzy, "Vida")
     resultado = ctrl.Consequent(resultado_fuzzy, "Resultado")
 
-    tempo["rapido"] = fuzz.zmf(tempo_fuzzy,5,10)
-    tempo["normal"] = fuzz.trapmf(tempo_fuzzy,[8,14,20,25])
-    tempo["lento"] = fuzz.smf(tempo_fuzzy,20,30)
+    tempo["rapido"] = fuzz.zmf(tempo_fuzzy,10,20)
+    tempo["normal"] = fuzz.trapmf(tempo_fuzzy,[18,24,40,45])
+    tempo["lento"] = fuzz.smf(tempo_fuzzy,40,50)
 
     vida["baixo"] = fuzz.zmf(vida_fuzzy,0,20)
     vida["medio"] = fuzz.trapmf(vida_fuzzy,[15,25,35,45])
@@ -1743,7 +1743,7 @@ def Fuzzy(tempo_wave: float, vida_player: int):
 
     resultado["facil"] = fuzz.zmf(resultado_fuzzy,0,3)
     resultado["medio"] = fuzz.trapmf(resultado_fuzzy,[2,5,6,8])
-    resultado["dificil"] =fuzz.smf(resultado_fuzzy,6,12)
+    resultado["dificil"] = fuzz.smf(resultado_fuzzy,6,12)
 
     rule1 = ctrl.Rule(tempo['rapido'] & vida["baixo"],resultado["dificil"]) 
     rule2 = ctrl.Rule(tempo['rapido'] & vida['medio'], resultado["dificil"])
@@ -1763,8 +1763,8 @@ def Fuzzy(tempo_wave: float, vida_player: int):
     print("----------------------------------------------")
     print(f"Wave:{Game_Constants.wave}")
     print(f"resultado final:{SE.output["Resultado"]}")
-    '''resultado.view(sim=SE)
-    plt.show()'''
+    resultado.view(sim=SE)
+    plt.show()
     print(f"tempo na wave:{tempo_wave}")
     print(f"vida perdida:{vida_player}")
 

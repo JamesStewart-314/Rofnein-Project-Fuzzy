@@ -110,7 +110,6 @@ resultado = []
 dificuldade_mult = 1
 wave = 1
 
-
 moedas = 30
 player_iventario = ["Sword", "Bow"]
 ataque_preco = 30
