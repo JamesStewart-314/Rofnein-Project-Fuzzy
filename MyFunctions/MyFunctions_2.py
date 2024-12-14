@@ -1733,17 +1733,17 @@ def Fuzzy(tempo_wave: float, vida_player: int):
     vida = ctrl.Antecedent(vida_fuzzy, "Vida")
     resultado = ctrl.Consequent(resultado_fuzzy, "Resultado")
 
-    tempo["rapido"] = fuzz.zmf(tempo_fuzzy,10,20)
-    tempo["normal"] = fuzz.trapmf(tempo_fuzzy,[18,24,40,45])
-    tempo["lento"] = fuzz.smf(tempo_fuzzy,40,50)
+    tempo["rapido"] = fuzz.trapmf(tempo_fuzzy,[float('-inf'), 0, 10, 20])
+    tempo["normal"] = fuzz.trapmf(tempo_fuzzy,[18, 24, 40, 45])
+    tempo["lento"] = fuzz.trapmf(tempo_fuzzy,[40, 50, 50, float('inf')])
 
-    vida["baixo"] = fuzz.zmf(vida_fuzzy,0,20)
-    vida["medio"] = fuzz.trapmf(vida_fuzzy,[15,25,35,45])
-    vida["alto"] = fuzz.smf(vida_fuzzy,40,55)
+    vida["baixo"] = fuzz.trapmf(vida_fuzzy, [float('-inf'), 0, 0, 20])
+    vida["medio"] = fuzz.trapmf(vida_fuzzy,[15, 25, 35, 45])
+    vida["alto"] = fuzz.trapmf(vida_fuzzy, [40, 55, 55, float('inf')])
 
-    resultado["facil"] = fuzz.zmf(resultado_fuzzy,0,3)
-    resultado["medio"] = fuzz.trapmf(resultado_fuzzy,[2,5,6,8])
-    resultado["dificil"] = fuzz.smf(resultado_fuzzy,6,12)
+    resultado["facil"] = fuzz.trapmf(resultado_fuzzy,[float('-inf'), 0, 0, 3])
+    resultado["medio"] = fuzz.trapmf(resultado_fuzzy,[2, 5, 6, 8])
+    resultado["dificil"] = fuzz.trapmf(resultado_fuzzy,[6, 12, 12, float('inf')])
 
     rule1 = ctrl.Rule(tempo['rapido'] & vida["baixo"],resultado["dificil"]) 
     rule2 = ctrl.Rule(tempo['rapido'] & vida['medio'], resultado["dificil"])
